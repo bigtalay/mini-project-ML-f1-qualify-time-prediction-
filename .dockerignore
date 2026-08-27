@@ -1,0 +1,8 @@
+.git
+.ipynb_checkpoints
+__pycache__
+*.py[cod]
+f1_project/artifacts
+f1_cache
+f1_project/f1_cache
+venv

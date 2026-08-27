@@ -1,0 +1,34 @@
+services:
+  jupyter:
+    image: f1-qualifying:local
+    build: .
+    ports:
+      - "127.0.0.1:8888:8888"
+    volumes:
+      - ./f1_project:/workspace/f1_project
+    restart: unless-stopped
+
+  app:
+    image: f1-qualifying:local
+    build: .
+    command:
+      - streamlit
+      - run
+      - app.py
+      - --server.address=0.0.0.0
+      - --server.port=8501
+      - --server.headless=true
+      - --browser.gatherUsageStats=false
+    ports:
+      - "127.0.0.1:8501:8501"
+    volumes:
+      - ./f1_project:/workspace/f1_project
+    restart: unless-stopped
+
+  pipeline:
+    image: f1-qualifying:local
+    build: .
+    command: ["python", "pipeline.py"]
+    volumes:
+      - ./f1_project:/workspace/f1_project
+    profiles: ["tools"]
