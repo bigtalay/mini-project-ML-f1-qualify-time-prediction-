@@ -1,0 +1,17 @@
+# 1. Virtual Environment (ห้ามเอาขึ้นเด็ดขาด เพราะหนักและผูกกับเครื่องใครเครื่องมัน)
+venv/
+
+# 2. Cache Data (ข้อมูล F1 ที่โหลดมาเก็บไว้ มันใหญ่มาก ไม่ควรเอาขึ้น Git)
+f1_project/f1_cache/
+f1_cache/
+
+# 3. ไฟล์บีบอัด (Zip ที่แพ็คไว้ส่งให้เพื่อน)
+*.zip
+
+# 4. ไฟล์ระบบของ Python และ Jupyter Notebook (ซ่อนไว้ไม่ให้รก)
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+
+
+*.csv
