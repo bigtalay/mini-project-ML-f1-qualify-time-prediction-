@@ -305,13 +305,14 @@ def what_if(payload: ScenarioRequest):
 @app.get("/api/v1/events/{event_id}/export")
 def export(event_id: str, kind: Literal["laps", "results", "predictions", "audit"] = "laps",
            drivers: str = "", session: Literal["FP1", "FP2", "FP3"] | None = None,
-           compound: str | None = None, usable: bool = True, search: str = "", sort: SORTS = "Time", descending: bool = False):
+           compound: str | None = None, usable: bool = True, search: str = "", sort: SORTS = "Time", descending: bool = False,
+           result_sort: Literal["Position", "Driver", "Q1", "Q2", "Q3"] = "Position"):
     event_or_404(event_id)
     selected = driver_list(event_id, drivers)
     if kind in ["laps", "audit"]:
         frame = dataset().filtered_laps(event_id, selected, session, compound, usable if kind == "laps" else False, search, sort, descending)
     elif kind == "results":
-        frame = dataset().results.loc[dataset().results.event_id.eq(event_id) & ~dataset().results.duplicate].sort_values("Position")
+        frame = dataset().results.loc[dataset().results.event_id.eq(event_id) & ~dataset().results.duplicate].sort_values(result_sort, na_position="last")
         if selected:
             frame = frame.loc[frame.Driver.isin(selected)]
         if search:

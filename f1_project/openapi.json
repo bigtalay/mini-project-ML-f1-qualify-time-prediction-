@@ -613,6 +613,23 @@
               "default": false,
               "title": "Descending"
             }
+          },
+          {
+            "name": "result_sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "Position",
+                "Driver",
+                "Q1",
+                "Q2",
+                "Q3"
+              ],
+              "type": "string",
+              "default": "Position",
+              "title": "Result Sort"
+            }
           }
         ],
         "responses": {
