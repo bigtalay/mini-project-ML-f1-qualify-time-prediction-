@@ -31,7 +31,7 @@ class DataModelTests(unittest.TestCase):
     def test_overlapping_rules_have_one_removal_reason(self):
         sample = self.data.laps.iloc[:2].copy()
         sample.loc[:, "LapTime"] = np.nan
-        sample.loc[:, "Deleted"] = True
+        sample["Deleted"] = True
         clean = clean_laps(sample)
         self.assertTrue(clean.reason.eq("missing_time_or_driver").all())
         self.assertTrue(clean.flag_deleted.all())

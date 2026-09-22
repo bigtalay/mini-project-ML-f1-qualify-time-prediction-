@@ -1,8 +1,2 @@
-fastf1==3.8.3
-jupyterlab>=4.2,<5
-matplotlib>=3.9,<4
-numpy>=1.26,<3
-pandas>=2.2,<3
-scikit-learn>=1.5,<2
-seaborn>=0.13,<1
-streamlit>=1.40,<2
+# Reproduce the tested Python 3.11 environment, including transitive dependencies.
+-r requirements.lock

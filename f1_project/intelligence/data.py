@@ -130,8 +130,8 @@ class Dataset:
         weather = weather[["Time", "AirTemp", "TrackTemp", "Rainfall", "Humidity"]].copy()
         return {"event": event, "results": records(result), "sessions": records(sessions), "weather": records(weather)}
 
-    def compare(self, event_id, drivers, session=None, compound=None):
-        frame = self.filtered_laps(event_id, drivers, session, compound)
+    def compare(self, event_id, drivers, session=None, compound=None, search=""):
+        frame = self.filtered_laps(event_id, drivers, session, compound, search=search)
         output = []
         for driver in drivers:
             sample = frame.loc[frame.Driver.eq(driver)]

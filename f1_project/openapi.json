@@ -1,0 +1,1764 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "F1 Weekend Intelligence",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/events": {
+      "get": {
+        "summary": "Events",
+        "operationId": "events_api_v1_events_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  },
+                  "type": "array",
+                  "title": "Response Events Api V1 Events Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/events/{event_id}": {
+      "get": {
+        "summary": "Overview",
+        "operationId": "overview_api_v1_events__event_id__get",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Event Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Overview"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/events/{event_id}/laps": {
+      "get": {
+        "summary": "Laps",
+        "operationId": "laps_api_v1_events__event_id__laps_get",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Event Id"
+            }
+          },
+          {
+            "name": "drivers",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Drivers"
+            }
+          },
+          {
+            "name": "session",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "FP1",
+                    "FP2",
+                    "FP3"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Session"
+            }
+          },
+          {
+            "name": "compound",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Compound"
+            }
+          },
+          {
+            "name": "usable",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Usable"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Search"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "Time",
+                "LapTime",
+                "LapNumber",
+                "Driver",
+                "Sector1Time",
+                "Sector2Time",
+                "Sector3Time",
+                "SpeedST",
+                "TyreLife"
+              ],
+              "type": "string",
+              "default": "Time",
+              "title": "Sort"
+            }
+          },
+          {
+            "name": "descending",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Descending"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 4000,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LapPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/events/{event_id}/compare": {
+      "get": {
+        "summary": "Comparison",
+        "operationId": "comparison_api_v1_events__event_id__compare_get",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Event Id"
+            }
+          },
+          {
+            "name": "drivers",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Drivers"
+            }
+          },
+          {
+            "name": "session",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "FP1",
+                    "FP2",
+                    "FP3"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Session"
+            }
+          },
+          {
+            "name": "compound",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Compound"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Search"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Comparison"
+                  },
+                  "title": "Response Comparison Api V1 Events  Event Id  Compare Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evaluation": {
+      "get": {
+        "summary": "Evaluation",
+        "operationId": "evaluation_api_v1_evaluation_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Evaluation"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/quality": {
+      "get": {
+        "summary": "Quality",
+        "operationId": "quality_api_v1_quality_get",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Event Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quality"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/events/{event_id}/predictions": {
+      "get": {
+        "summary": "Predictions",
+        "operationId": "predictions_api_v1_events__event_id__predictions_get",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Event Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PredictionRow"
+                  },
+                  "title": "Response Predictions Api V1 Events  Event Id  Predictions Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/predict": {
+      "post": {
+        "summary": "What If",
+        "operationId": "what_if_api_v1_predict_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScenarioRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/events/{event_id}/export": {
+      "get": {
+        "summary": "Export",
+        "operationId": "export_api_v1_events__event_id__export_get",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Event Id"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "laps",
+                "results",
+                "predictions",
+                "audit"
+              ],
+              "type": "string",
+              "default": "laps",
+              "title": "Kind"
+            }
+          },
+          {
+            "name": "drivers",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Drivers"
+            }
+          },
+          {
+            "name": "session",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "FP1",
+                    "FP2",
+                    "FP3"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Session"
+            }
+          },
+          {
+            "name": "compound",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Compound"
+            }
+          },
+          {
+            "name": "usable",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Usable"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Search"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "Time",
+                "LapTime",
+                "LapNumber",
+                "Driver",
+                "Sector1Time",
+                "Sector2Time",
+                "Sector3Time",
+                "SpeedST",
+                "TyreLife"
+              ],
+              "type": "string",
+              "default": "Time",
+              "title": "Sort"
+            }
+          },
+          {
+            "name": "descending",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Descending"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Comparison": {
+        "properties": {
+          "driver": {
+            "type": "string",
+            "title": "Driver"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "median": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median"
+          },
+          "iqr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iqr"
+          },
+          "enough_laps": {
+            "type": "boolean",
+            "title": "Enough Laps"
+          },
+          "best_lap": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Lap"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "driver",
+          "count",
+          "median",
+          "iqr",
+          "enough_laps",
+          "best_lap"
+        ],
+        "title": "Comparison"
+      },
+      "Evaluation": {
+        "properties": {
+          "selected_model": {
+            "type": "string",
+            "title": "Selected Model"
+          },
+          "selection": {
+            "items": {
+              "$ref": "#/components/schemas/ModelScore"
+            },
+            "type": "array",
+            "title": "Selection"
+          },
+          "test": {
+            "items": {
+              "$ref": "#/components/schemas/ModelScore"
+            },
+            "type": "array",
+            "title": "Test"
+          },
+          "per_event": {
+            "items": {
+              "$ref": "#/components/schemas/EventScore"
+            },
+            "type": "array",
+            "title": "Per Event"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/Interval"
+          },
+          "partitions": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Partition"
+            },
+            "type": "object",
+            "title": "Partitions"
+          },
+          "selected_features": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Selected Features"
+          },
+          "excluded_test_rows": {
+            "type": "integer",
+            "title": "Excluded Test Rows"
+          },
+          "input_ranges": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/InputRange"
+            },
+            "type": "object",
+            "title": "Input Ranges"
+          }
+        },
+        "type": "object",
+        "required": [
+          "selected_model",
+          "selection",
+          "test",
+          "per_event",
+          "interval",
+          "partitions",
+          "selected_features",
+          "excluded_test_rows",
+          "input_ranges"
+        ],
+        "title": "Evaluation"
+      },
+      "Event": {
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "title": "Event Id"
+          },
+          "year": {
+            "type": "integer",
+            "title": "Year"
+          },
+          "round": {
+            "type": "integer",
+            "title": "Round"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "circuit_id": {
+            "type": "string",
+            "title": "Circuit Id"
+          },
+          "circuit": {
+            "type": "string",
+            "title": "Circuit"
+          },
+          "country": {
+            "type": "string",
+            "title": "Country"
+          },
+          "location": {
+            "type": "string",
+            "title": "Location"
+          },
+          "format": {
+            "type": "string",
+            "title": "Format"
+          }
+        },
+        "type": "object",
+        "required": [
+          "event_id",
+          "year",
+          "round",
+          "name",
+          "circuit_id",
+          "circuit",
+          "country",
+          "location",
+          "format"
+        ],
+        "title": "Event"
+      },
+      "EventScore": {
+        "properties": {
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "mae": {
+            "type": "number",
+            "title": "Mae"
+          },
+          "rmse": {
+            "type": "number",
+            "title": "Rmse"
+          },
+          "event_id": {
+            "type": "string",
+            "title": "Event Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model",
+          "count",
+          "mae",
+          "rmse",
+          "event_id"
+        ],
+        "title": "EventScore"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "InputRange": {
+        "properties": {
+          "min": {
+            "type": "number",
+            "title": "Min"
+          },
+          "max": {
+            "type": "number",
+            "title": "Max"
+          }
+        },
+        "type": "object",
+        "required": [
+          "min",
+          "max"
+        ],
+        "title": "InputRange"
+      },
+      "Interval": {
+        "properties": {
+          "percentiles": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Percentiles"
+          },
+          "residual_lower": {
+            "type": "number",
+            "title": "Residual Lower"
+          },
+          "residual_upper": {
+            "type": "number",
+            "title": "Residual Upper"
+          },
+          "calibration_count": {
+            "type": "integer",
+            "title": "Calibration Count"
+          },
+          "test_coverage": {
+            "type": "number",
+            "title": "Test Coverage"
+          }
+        },
+        "type": "object",
+        "required": [
+          "percentiles",
+          "residual_lower",
+          "residual_upper",
+          "calibration_count",
+          "test_coverage"
+        ],
+        "title": "Interval"
+      },
+      "Lap": {
+        "properties": {
+          "lap_id": {
+            "type": "string",
+            "title": "Lap Id"
+          },
+          "source_row": {
+            "type": "integer",
+            "title": "Source Row"
+          },
+          "event_id": {
+            "type": "string",
+            "title": "Event Id"
+          },
+          "Driver": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Driver"
+          },
+          "Team": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team"
+          },
+          "Session": {
+            "type": "string",
+            "title": "Session"
+          },
+          "LapNumber": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lapnumber"
+          },
+          "LapTime": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Laptime"
+          },
+          "Time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time"
+          },
+          "Sector1Time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector1Time"
+          },
+          "Sector2Time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector2Time"
+          },
+          "Sector3Time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector3Time"
+          },
+          "SpeedI1": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Speedi1"
+          },
+          "SpeedI2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Speedi2"
+          },
+          "SpeedFL": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Speedfl"
+          },
+          "SpeedST": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Speedst"
+          },
+          "Compound": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Compound"
+          },
+          "TyreLife": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tyrelife"
+          },
+          "Stint": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stint"
+          },
+          "usable": {
+            "type": "boolean",
+            "title": "Usable"
+          },
+          "pre_qualifying": {
+            "type": "boolean",
+            "title": "Pre Qualifying"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "lap_id",
+          "source_row",
+          "event_id",
+          "Session",
+          "usable",
+          "pre_qualifying",
+          "reason"
+        ],
+        "title": "Lap"
+      },
+      "LapPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Lap"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "offset",
+          "limit"
+        ],
+        "title": "LapPage"
+      },
+      "ModelScore": {
+        "properties": {
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "mae": {
+            "type": "number",
+            "title": "Mae"
+          },
+          "rmse": {
+            "type": "number",
+            "title": "Rmse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model",
+          "count",
+          "mae",
+          "rmse"
+        ],
+        "title": "ModelScore"
+      },
+      "Overview": {
+        "properties": {
+          "event": {
+            "$ref": "#/components/schemas/Event"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/Result"
+            },
+            "type": "array",
+            "title": "Results"
+          },
+          "sessions": {
+            "items": {
+              "$ref": "#/components/schemas/Session"
+            },
+            "type": "array",
+            "title": "Sessions"
+          },
+          "weather": {
+            "items": {
+              "$ref": "#/components/schemas/Weather"
+            },
+            "type": "array",
+            "title": "Weather"
+          }
+        },
+        "type": "object",
+        "required": [
+          "event",
+          "results",
+          "sessions",
+          "weather"
+        ],
+        "title": "Overview"
+      },
+      "Partition": {
+        "properties": {
+          "rows": {
+            "type": "integer",
+            "title": "Rows"
+          },
+          "events": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Events"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rows",
+          "events"
+        ],
+        "title": "Partition"
+      },
+      "PredictionRow": {
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "title": "Event Id"
+          },
+          "Driver": {
+            "type": "string",
+            "title": "Driver"
+          },
+          "QualiTime": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Qualitime"
+          },
+          "FP1_Time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp1 Time"
+          },
+          "FP2_Time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp2 Time"
+          },
+          "FP3_Time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp3 Time"
+          },
+          "prediction": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prediction"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "lower": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lower"
+          },
+          "upper": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upper"
+          },
+          "predictable": {
+            "type": "boolean",
+            "title": "Predictable"
+          }
+        },
+        "type": "object",
+        "required": [
+          "event_id",
+          "Driver",
+          "predictable"
+        ],
+        "title": "PredictionRow"
+      },
+      "Quality": {
+        "properties": {
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "checksums": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Checksums"
+          },
+          "raw_laps": {
+            "type": "integer",
+            "title": "Raw Laps"
+          },
+          "raw_results": {
+            "type": "integer",
+            "title": "Raw Results"
+          },
+          "kept_laps": {
+            "type": "integer",
+            "title": "Kept Laps"
+          },
+          "removals": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Removals"
+          },
+          "overlapping_flags": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Overlapping Flags"
+          },
+          "after_qualifying_laps": {
+            "type": "integer",
+            "title": "After Qualifying Laps"
+          },
+          "pre_qualifying_laps": {
+            "type": "integer",
+            "title": "Pre Qualifying Laps"
+          },
+          "result_duplicates": {
+            "type": "integer",
+            "title": "Result Duplicates"
+          },
+          "missing_targets": {
+            "type": "integer",
+            "title": "Missing Targets"
+          },
+          "no_practice_rows": {
+            "type": "integer",
+            "title": "No Practice Rows"
+          },
+          "feature_rows": {
+            "type": "integer",
+            "title": "Feature Rows"
+          },
+          "missing_features": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Missing Features"
+          }
+        },
+        "type": "object",
+        "required": [
+          "version",
+          "checksums",
+          "raw_laps",
+          "raw_results",
+          "kept_laps",
+          "removals",
+          "overlapping_flags",
+          "after_qualifying_laps",
+          "pre_qualifying_laps",
+          "result_duplicates",
+          "missing_targets",
+          "no_practice_rows",
+          "feature_rows",
+          "missing_features"
+        ],
+        "title": "Quality"
+      },
+      "Result": {
+        "properties": {
+          "Driver": {
+            "type": "string",
+            "title": "Driver"
+          },
+          "Team": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team"
+          },
+          "Position": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "Q1": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Q1"
+          },
+          "Q2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Q2"
+          },
+          "Q3": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Q3"
+          },
+          "QualiTime": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Qualitime"
+          },
+          "source_row": {
+            "type": "integer",
+            "title": "Source Row"
+          }
+        },
+        "type": "object",
+        "required": [
+          "Driver",
+          "source_row"
+        ],
+        "title": "Result"
+      },
+      "ScenarioRequest": {
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "title": "Event Id"
+          },
+          "driver": {
+            "type": "string",
+            "title": "Driver"
+          },
+          "overrides": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "propertyNames": {
+              "enum": [
+                "FP1_Time",
+                "FP2_Time",
+                "FP3_Time"
+              ]
+            },
+            "type": "object",
+            "title": "Overrides"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "event_id",
+          "driver"
+        ],
+        "title": "ScenarioRequest"
+      },
+      "ScenarioResponse": {
+        "properties": {
+          "prediction": {
+            "type": "number",
+            "title": "Prediction"
+          },
+          "baseline": {
+            "type": "number",
+            "title": "Baseline"
+          },
+          "delta": {
+            "type": "number",
+            "title": "Delta"
+          },
+          "lower": {
+            "type": "number",
+            "title": "Lower"
+          },
+          "upper": {
+            "type": "number",
+            "title": "Upper"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "inputs": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Inputs"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prediction",
+          "baseline",
+          "delta",
+          "lower",
+          "upper",
+          "warnings",
+          "inputs",
+          "model"
+        ],
+        "title": "ScenarioResponse"
+      },
+      "Session": {
+        "properties": {
+          "session": {
+            "type": "string",
+            "title": "Session"
+          },
+          "start_utc": {
+            "type": "string",
+            "title": "Start Utc"
+          },
+          "end_utc": {
+            "type": "string",
+            "title": "End Utc"
+          },
+          "before_qualifying": {
+            "type": "boolean",
+            "title": "Before Qualifying"
+          },
+          "lap_count": {
+            "type": "integer",
+            "title": "Lap Count"
+          },
+          "timing_source": {
+            "type": "string",
+            "title": "Timing Source"
+          }
+        },
+        "type": "object",
+        "required": [
+          "session",
+          "start_utc",
+          "end_utc",
+          "before_qualifying",
+          "lap_count",
+          "timing_source"
+        ],
+        "title": "Session"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "Weather": {
+        "properties": {
+          "Time": {
+            "type": "number",
+            "title": "Time"
+          },
+          "AirTemp": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Airtemp"
+          },
+          "TrackTemp": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tracktemp"
+          },
+          "Rainfall": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rainfall"
+          },
+          "Humidity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Humidity"
+          }
+        },
+        "type": "object",
+        "required": [
+          "Time"
+        ],
+        "title": "Weather"
+      }
+    }
+  }
+}

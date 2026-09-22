@@ -193,6 +193,6 @@ def scenario(dataset, bundle, event_id, driver, overrides):
     if not np.isfinite(value) or value <= 0:
         raise ValueError("สถานการณ์นี้ให้ผลนอกขอบเขตที่แสดงได้ กรุณาใช้ input ใกล้ข้อมูลจริง")
     interval = bundle["report"]["interval"]
-    return {"prediction": value, "baseline": baseline, "delta": value-baseline,
+    return {"prediction": value, "baseline": baseline, "delta": round(value-baseline, 9),
             "lower": value+interval["residual_lower"], "upper": value+interval["residual_upper"],
             "warnings": warnings, "inputs": records(frame[PRACTICE])[0], "model": bundle["selected"]}
