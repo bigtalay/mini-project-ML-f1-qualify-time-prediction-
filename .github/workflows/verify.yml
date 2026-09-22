@@ -1,0 +1,33 @@
+name: Verify weekend intelligence
+on:
+  push:
+    branches: [docker]
+  pull_request:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: docker compose config --quiet
+      - run: docker compose up --build -d
+      - run: docker compose run --rm test
+      - run: docker compose run --rm --entrypoint jupyter pipeline nbconvert --to notebook --execute f1_quali_project.ipynb --output /tmp/verified.ipynb --ExecutePreprocessor.timeout=180
+      - run: npm ci && npm run lint && npm run build && npm run schema && git diff --exit-code -- src/api.d.ts
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - run: npm run test:e2e
+        working-directory: frontend
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-results
+          path: frontend/test-results
+      - if: always()
+        run: docker compose logs --no-color
