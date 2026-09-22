@@ -6,3 +6,9 @@ f1_project/artifacts
 f1_cache
 f1_project/f1_cache
 venv
+frontend/node_modules
+frontend/dist
+frontend/test-results
+frontend/playwright-report
+AGENTS.md
+docs/screenshots

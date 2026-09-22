@@ -1,86 +1,36 @@
-"""Streamlit UI for the trained qualifying-time predictor."""
-
-from pathlib import Path
-
-import joblib
-import pandas as pd
+"""Optional legacy Streamlit view, using the same verified engine as the new web app."""
 import streamlit as st
+import pandas as pd
 
-from preprocessing import transform_features
+from intelligence.data import Dataset, PRACTICE
+from intelligence.ml import ensure_artifacts, scenario
 
+st.set_page_config(page_title="Weekend Intelligence / Legacy", layout="wide")
+st.title("Weekend Intelligence — Legacy view")
+st.caption("เว็บหลัก: http://localhost:8501 · ผลทดสอบย้อนหลังปี 2023")
 
-MODEL_PATH = Path("artifacts/model_bundle.joblib")
+@st.cache_resource
+def load():
+    dataset = Dataset()
+    return dataset, ensure_artifacts(dataset)
 
-
-def format_lap_time(seconds: float) -> str:
-    minutes = int(seconds // 60)
-    remaining = seconds - minutes * 60
-    return f"{minutes}:{remaining:06.3f}"
-
-
-st.set_page_config(page_title="F1 Qualifying Predictor", page_icon="🏎️", layout="wide")
-st.title("F1 Qualifying Time Prediction")
-st.caption("Trained on FastF1 qualifying, practice, and weather data from 2021-2022; evaluated on 2023.")
-
-if not MODEL_PATH.exists():
-    st.error("Model artifacts are not available yet.")
-    st.code("docker compose run --rm pipeline", language="powershell")
-    st.stop()
-
-bundle = joblib.load(MODEL_PATH)
-reference = bundle["reference"]
-metrics = bundle["metrics"]
-
-left, right = st.columns([2, 1])
-with right:
-    st.subheader("Evaluation")
-    st.write(bundle["split_description"])
-    st.dataframe(metrics, hide_index=True, use_container_width=True)
-    st.info(f"Active model: {bundle['model_name']}")
-
-with left:
-    st.subheader("Race weekend inputs")
-    category_left, category_right = st.columns(2)
-    with category_left:
-        driver = st.selectbox("Driver", reference["categories"]["Driver"])
-        team = st.selectbox("Team", reference["categories"]["Team"])
-    with category_right:
-        circuit = st.selectbox("Circuit", reference["categories"]["Circuit"])
-        year = st.selectbox("Season", reference["years"], index=len(reference["years"]) - 1)
-
-    defaults = reference["numeric_defaults"]
-    weather_left, weather_right = st.columns(2)
-    with weather_left:
-        air_temp = st.number_input("Air temperature (°C)", value=defaults["AirTemp"], step=0.1)
-        track_temp = st.number_input("Track temperature (°C)", value=defaults["TrackTemp"], step=0.1)
-        humidity = st.number_input("Humidity (%)", min_value=0.0, max_value=100.0, value=defaults["Humidity"], step=0.1)
-        rainfall = st.number_input("Rainfall fraction (0-1)", min_value=0.0, max_value=1.0, value=min(max(defaults["Rainfall"], 0.0), 1.0), step=0.01)
-    with weather_right:
-        fp1 = st.number_input("FP1 best lap (seconds)", value=defaults["FP1_Time"], step=0.001, format="%.3f")
-        fp2 = st.number_input("FP2 best lap (seconds)", value=defaults["FP2_Time"], step=0.001, format="%.3f")
-        fp3 = st.number_input("FP3 best lap (seconds)", value=defaults["FP3_Time"], step=0.001, format="%.3f")
-
-    if st.button("Predict qualifying time", type="primary", use_container_width=True):
-        row = pd.DataFrame(
-            [
-                {
-                    "Driver": driver,
-                    "Team": team,
-                    "Circuit": circuit,
-                    "Year": year,
-                    "AirTemp": air_temp,
-                    "TrackTemp": track_temp,
-                    "Humidity": humidity,
-                    "Rainfall": rainfall,
-                    "FP1_Time": fp1,
-                    "FP2_Time": fp2,
-                    "FP3_Time": fp3,
-                }
-            ]
-        )
-        transformed = transform_features(row, bundle["preprocessing"])
-        prediction = float(bundle["model"].predict(transformed)[0])
-        st.metric("Predicted qualifying lap", format_lap_time(prediction), f"{prediction:.3f} seconds")
-
-st.divider()
-st.caption("FastF1 is an unofficial project and is not associated with Formula 1 companies.")
+data, bundle = load()
+events = data.events.loc[data.events.year.eq(2023)]
+event_id = st.selectbox("รายการแข่ง", events.event_id, format_func=lambda x: data.event(x)["name"])
+rows = data.features.loc[data.features.event_id.eq(event_id)]
+driver = st.selectbox("นักขับ", rows.Driver)
+row = rows.loc[rows.Driver.eq(driver)].iloc[0]
+overrides = {}
+for column in PRACTICE:
+    if pd.notna(row[column]):
+        overrides[column] = st.number_input(column, min_value=.001, value=float(row[column]), step=.001, format="%.3f", key=f"{event_id}-{driver}-{column}")
+if st.button("ทดลอง scenario"):
+    try:
+        result = scenario(data, bundle, event_id, driver, overrides)
+        st.metric("เวลาที่ทำนาย (วินาที)", f"{result['prediction']:.3f}", f"{result['delta']:+.3f}")
+        st.write(result)
+    except ValueError as error:
+        st.warning(str(error))
+st.subheader("Held-out test / 2023")
+st.dataframe(pd.DataFrame(bundle["report"]["test"]), hide_index=True)
+st.caption("โมเดลถูกเลือกด้วย validation ปี 2022 ผล test อาจด้อยกว่า baseline; what-if ไม่ใช่ข้อสรุปเชิงสาเหตุ")

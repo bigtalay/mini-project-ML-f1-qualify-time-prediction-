@@ -1,34 +1,58 @@
+name: f1-weekend-intelligence
+
+x-runtime: &runtime
+  image: f1-weekend-intelligence:local
+  volumes:
+    - artifacts:/workspace/f1_project/artifacts
+
 services:
-  jupyter:
-    image: f1-qualifying:local
+  prepare:
+    <<: *runtime
+    command: ["python", "-m", "intelligence.prepare"]
+    restart: "no"
+
+  app:
+    <<: *runtime
     build: .
+    depends_on:
+      prepare:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:8501:8501"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/api/v1/health', timeout=5)"]
+      interval: 15s
+      timeout: 8s
+      start_period: 45s
+      retries: 3
+
+  jupyter:
+    <<: *runtime
+    profiles: ["notebook"]
+    command: ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--IdentityProvider.token=", "--ServerApp.password=", "--ServerApp.root_dir=/workspace/f1_project"]
     ports:
       - "127.0.0.1:8888:8888"
     volumes:
       - ./f1_project:/workspace/f1_project
-    restart: unless-stopped
+      - artifacts:/workspace/f1_project/artifacts
 
-  app:
-    image: f1-qualifying:local
-    build: .
-    command:
-      - streamlit
-      - run
-      - app.py
-      - --server.address=0.0.0.0
-      - --server.port=8501
-      - --server.headless=true
-      - --browser.gatherUsageStats=false
+  legacy:
+    <<: *runtime
+    profiles: ["legacy"]
+    command: ["streamlit", "run", "app.py", "--server.address=0.0.0.0", "--server.port=8502", "--server.headless=true", "--browser.gatherUsageStats=false"]
     ports:
-      - "127.0.0.1:8501:8501"
-    volumes:
-      - ./f1_project:/workspace/f1_project
-    restart: unless-stopped
+      - "127.0.0.1:8502:8502"
 
   pipeline:
-    image: f1-qualifying:local
-    build: .
-    command: ["python", "pipeline.py"]
-    volumes:
-      - ./f1_project:/workspace/f1_project
+    <<: *runtime
     profiles: ["tools"]
+    command: ["python", "-m", "intelligence.prepare", "--force"]
+
+  test:
+    <<: *runtime
+    profiles: ["tools"]
+    command: ["python", "-m", "unittest", "discover", "-s", "tests", "-v"]
+
+volumes:
+  artifacts:

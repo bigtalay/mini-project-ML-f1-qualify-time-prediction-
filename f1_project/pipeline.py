@@ -1,11 +1,9 @@
-"""Run raw extraction, data preparation, and model training end to end."""
-
-from data_collection import collect_raw_dataset
-from data_preparation import prepare_modeling_table
-from modeling import train_models
-
+"""Offline analytics pipeline. Collection is a separate, explicit maintenance command."""
+from intelligence.data import Dataset
+from intelligence.ml import ensure_artifacts
 
 if __name__ == "__main__":
-    collect_raw_dataset()
-    prepare_modeling_table()
-    train_models()
+    dataset = Dataset()
+    bundle = ensure_artifacts(dataset)
+    print(dataset.quality())
+    print(bundle["report"]["test"])
