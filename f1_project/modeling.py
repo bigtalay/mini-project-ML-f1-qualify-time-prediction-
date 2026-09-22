@@ -26,7 +26,7 @@ def _metrics(y_true, prediction):
 
 
 def train_models(
-    dataset_path: str | Path = "f1_all_circuits_raw.csv",
+    dataset_path: str | Path = "data/processed/f1_model_features.csv",
     artifact_dir: str | Path = "artifacts",
 ):
     dataset_path = Path(dataset_path)
@@ -93,7 +93,7 @@ def train_models(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--dataset", default="f1_all_circuits_raw.csv")
+    parser.add_argument("--dataset", default="data/processed/f1_model_features.csv")
     parser.add_argument("--artifact-dir", default="artifacts")
     args = parser.parse_args()
     train_models(args.dataset, args.artifact_dir)

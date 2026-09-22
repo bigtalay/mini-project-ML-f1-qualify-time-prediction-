@@ -1,4 +1,4 @@
-"""Download and cache F1 qualifying features from the FastF1 API."""
+"""Extract source-granularity qualifying, practice-lap, and weather tables."""
 
 from __future__ import annotations
 
@@ -13,23 +13,69 @@ from fastf1.exceptions import DataNotLoadedError, RateLimitExceededError
 
 
 PRACTICE_SESSIONS = ("FP1", "FP2", "FP3")
-DATA_COLUMNS = [
+RESULT_COLUMNS = [
+    "Year",
+    "Circuit",
+    "DriverNumber",
     "Driver",
+    "DriverId",
     "Team",
+    "Position",
     "Q1",
     "Q2",
     "Q3",
-    "QualiTime",
-    "AirTemp",
-    "TrackTemp",
-    "Humidity",
-    "Rainfall",
-    "FP1_Time",
-    "FP2_Time",
-    "FP3_Time",
+    "Status",
+]
+LAP_COLUMNS = [
     "Year",
     "Circuit",
+    "Session",
+    "Time",
+    "Driver",
+    "DriverNumber",
+    "LapTime",
+    "LapNumber",
+    "Stint",
+    "Sector1Time",
+    "Sector2Time",
+    "Sector3Time",
+    "SpeedI1",
+    "SpeedI2",
+    "SpeedFL",
+    "SpeedST",
+    "Compound",
+    "TyreLife",
+    "FreshTyre",
+    "Team",
+    "TrackStatus",
+    "Deleted",
+    "DeletedReason",
+    "FastF1Generated",
+    "IsAccurate",
 ]
+WEATHER_COLUMNS = [
+    "Year",
+    "Circuit",
+    "Session",
+    "Time",
+    "AirTemp",
+    "Humidity",
+    "Pressure",
+    "Rainfall",
+    "TrackTemp",
+    "WindDirection",
+    "WindSpeed",
+]
+TIME_COLUMNS = {
+    "Q1",
+    "Q2",
+    "Q3",
+    "Time",
+    "LapTime",
+    "Sector1Time",
+    "Sector2Time",
+    "Sector3Time",
+}
 
 
 def configure_fastf1(cache_dir: Path) -> None:
@@ -39,144 +85,159 @@ def configure_fastf1(cache_dir: Path) -> None:
     logging.getLogger("fastf1").setLevel(logging.WARNING)
 
 
-def get_practice_best_laps(year: int, event: str, session_code: str) -> pd.DataFrame:
-    """Return each driver's fastest valid lap, or an empty frame if unavailable."""
-    column = f"{session_code}_Time"
+def _seconds(frame: pd.DataFrame) -> pd.DataFrame:
+    """Serialize FastF1 timedeltas as seconds without imputing or aggregating."""
+    frame = frame.copy()
+    for column in TIME_COLUMNS.intersection(frame.columns):
+        if pd.api.types.is_timedelta64_dtype(frame[column]):
+            frame[column] = frame[column].dt.total_seconds()
+    return frame
+
+
+def _qualifying_results(session, year: int, circuit: str) -> pd.DataFrame:
+    source = session.results[
+        ["DriverNumber", "Abbreviation", "DriverId", "TeamName", "Position", "Q1", "Q2", "Q3", "Status"]
+    ].copy()
+    source = source.rename(columns={"Abbreviation": "Driver", "TeamName": "Team"})
+    source.insert(0, "Circuit", circuit)
+    source.insert(0, "Year", year)
+    return _seconds(source)[RESULT_COLUMNS]
+
+
+def _qualifying_weather(session, year: int, circuit: str) -> pd.DataFrame:
+    source = session.weather_data.copy()
+    source.insert(0, "Session", "Q")
+    source.insert(0, "Circuit", circuit)
+    source.insert(0, "Year", year)
+    return _seconds(source)[WEATHER_COLUMNS]
+
+
+def _practice_laps(year: int, circuit: str, session_code: str) -> pd.DataFrame:
     try:
-        session = fastf1.get_session(year, event, session_code)
+        session = fastf1.get_session(year, circuit, session_code)
         session.load(telemetry=False, weather=False, laps=True, messages=False)
-        if session.laps.empty:
-            return pd.DataFrame(columns=["Driver", column])
-        best = session.laps.groupby("Driver", observed=True)["LapTime"].min().reset_index()
-        best.columns = ["Driver", column]
-        best[column] = best[column].dt.total_seconds()
-        return best
+        source = session.laps[
+            [column for column in LAP_COLUMNS if column in session.laps.columns]
+        ].copy()
     except (ValueError, DataNotLoadedError) as exc:
-        # Some sprint/cancelled weekends do not have every FP session.
         print(f"    {session_code}: unavailable ({type(exc).__name__})")
-        return pd.DataFrame(columns=["Driver", column])
+        return pd.DataFrame(columns=LAP_COLUMNS)
+
+    source.insert(0, "Session", session_code)
+    source.insert(0, "Circuit", circuit)
+    source.insert(0, "Year", year)
+    return _seconds(source)[LAP_COLUMNS]
 
 
-def get_event_data(year: int, event: str) -> pd.DataFrame:
-    print(f"  Collecting {year} {event}")
-    qualifying = fastf1.get_session(year, event, "Q")
+def collect_event(year: int, circuit: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    print(f"  Extracting {year} {circuit}")
+    qualifying = fastf1.get_session(year, circuit, "Q")
     qualifying.load(telemetry=False, weather=True, laps=False, messages=False)
-
-    results = qualifying.results[["Abbreviation", "TeamName", "Q1", "Q2", "Q3"]].copy()
-    results = results.rename(columns={"Abbreviation": "Driver", "TeamName": "Team"})
-    for column in ("Q1", "Q2", "Q3"):
-        results[column] = results[column].dt.total_seconds()
-    results["QualiTime"] = results[["Q1", "Q2", "Q3"]].min(axis=1)
-    if results.empty or results["QualiTime"].notna().sum() == 0:
-        print("    Results unavailable; falling back to qualifying lap timing")
-        qualifying.load(telemetry=False, weather=True, laps=True, messages=False)
-        laps = qualifying.laps.dropna(subset=["Driver", "LapTime"])
-        results = (
-            laps.groupby("Driver", observed=True)
-            .agg(Team=("Team", "first"), QualiTime=("LapTime", "min"))
-            .reset_index()
-        )
-        results["QualiTime"] = results["QualiTime"].dt.total_seconds()
-        results[["Q1", "Q2", "Q3"]] = pd.NA
+    results = _qualifying_results(qualifying, year, circuit)
+    weather = _qualifying_weather(qualifying, year, circuit)
+    practice_frames = [_practice_laps(year, circuit, code) for code in PRACTICE_SESSIONS]
+    available_practices = [frame for frame in practice_frames if not frame.empty]
+    practices = (
+        pd.concat(available_practices, ignore_index=True)
+        if available_practices
+        else pd.DataFrame(columns=LAP_COLUMNS)
+    )
     if results.empty:
-        raise RuntimeError("No qualifying results or lap timing available")
+        raise RuntimeError("FastF1 returned no qualifying result rows")
+    return results, practices, weather
 
-    weather = qualifying.weather_data
-    for column in ("AirTemp", "TrackTemp", "Humidity", "Rainfall"):
-        results[column] = pd.to_numeric(weather[column], errors="coerce").mean()
 
-    for session_code in PRACTICE_SESSIONS:
-        results = results.merge(
-            get_practice_best_laps(year, event, session_code),
-            on="Driver",
-            how="left",
+def _read_or_empty(path: Path, columns: list[str], force: bool) -> pd.DataFrame:
+    if path.exists() and not force:
+        return pd.read_csv(path)
+    return pd.DataFrame(columns=columns)
+
+
+def _append(existing: pd.DataFrame, new: pd.DataFrame) -> pd.DataFrame:
+    if existing.empty:
+        return new.copy()
+    if new.empty:
+        return existing
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message="The behavior of DataFrame concatenation with empty or all-NA entries",
+            category=FutureWarning,
         )
-    results["Year"] = year
-    results["Circuit"] = event
-    return results[DATA_COLUMNS]
+        return pd.concat([existing, new], ignore_index=True)
 
 
-def collect_season(year: int, output_dir: Path, force: bool = False) -> pd.DataFrame:
-    """Collect one season and checkpoint after every event for safe resumption."""
-    output_path = output_dir / f"f1_{year}_raw.csv"
-    if output_path.exists() and not force:
-        season = pd.read_csv(output_path)
-    else:
-        season = pd.DataFrame(columns=DATA_COLUMNS)
-
-    schedule = fastf1.get_event_schedule(year)
-    schedule = schedule.loc[
-        (schedule["EventFormat"] != "testing") & (schedule["RoundNumber"] > 0)
-    ]
-    expected_events = schedule["EventName"].astype(str).tolist()
-    if season.empty:
-        completed = set()
-    else:
-        has_practice_data = season[[f"{code}_Time" for code in PRACTICE_SESSIONS]].notna().any(axis=1)
-        completed = set(season.loc[has_practice_data, "Circuit"].dropna().astype(str))
-    failures = []
-
-    print(f"Season {year}: {len(completed)}/{len(expected_events)} events already present")
-    for event in expected_events:
-        if event in completed:
-            continue
-        try:
-            event_data = get_event_data(year, event)
-            if season.empty:
-                season = event_data.copy()
-            else:
-                with warnings.catch_warnings():
-                    warnings.filterwarnings(
-                        "ignore",
-                        message="The behavior of DataFrame concatenation with empty or all-NA entries",
-                        category=FutureWarning,
-                    )
-                    season = pd.concat([season, event_data], ignore_index=True)
-            season = season.drop_duplicates(subset=["Year", "Circuit", "Driver"], keep="last")
-            season.to_csv(output_path, index=False)
-        except RateLimitExceededError as exc:
-            raise RuntimeError(
-                "FastF1 rate limit reached. Rerun the pipeline; completed events are checkpointed."
-            ) from exc
-        except Exception as exc:
-            failures.append((year, event, repr(exc)))
-            print(f"    FAILED: {event}: {exc}")
-
-    present = set(season.get("Circuit", pd.Series(dtype=str)).dropna().astype(str))
-    missing = sorted(set(expected_events).difference(present))
-    if failures or missing:
-        details = "; ".join(f"{event}: {reason}" for _, event, reason in failures)
-        raise RuntimeError(f"Season {year} incomplete. Missing: {missing}. Failures: {details}")
-    print(f"Season {year}: complete ({len(season)} rows, {len(present)} events)")
-    return season[DATA_COLUMNS]
-
-
-def collect_dataset(
+def collect_raw_dataset(
     years=(2021, 2022, 2023),
-    output_dir: str | Path = ".",
+    raw_dir: str | Path = "data/raw",
     cache_dir: str | Path = "f1_cache",
     force: bool = False,
-) -> pd.DataFrame:
-    output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+) -> dict[str, pd.DataFrame]:
+    """Extract raw tables and checkpoint them after every complete event."""
+    raw_dir = Path(raw_dir)
+    raw_dir.mkdir(parents=True, exist_ok=True)
     configure_fastf1(Path(cache_dir))
-    seasons = [collect_season(year, output_dir, force=force) for year in years]
-    combined = pd.concat(seasons, ignore_index=True)
-    combined = combined.drop_duplicates(subset=["Year", "Circuit", "Driver"], keep="last")
-    combined_path = output_dir / "f1_all_circuits_raw.csv"
-    combined.to_csv(combined_path, index=False)
-    print(f"Combined dataset: {len(combined)} rows -> {combined_path}")
-    return combined
+
+    paths = {
+        "results": raw_dir / "qualifying_results.csv",
+        "laps": raw_dir / "practice_laps.csv",
+        "weather": raw_dir / "qualifying_weather.csv",
+    }
+    results = _read_or_empty(paths["results"], RESULT_COLUMNS, force)
+    laps = _read_or_empty(paths["laps"], LAP_COLUMNS, force)
+    weather = _read_or_empty(paths["weather"], WEATHER_COLUMNS, force)
+    result_events = set(zip(results.get("Year", []), results.get("Circuit", [])))
+    lap_events = set(zip(laps.get("Year", []), laps.get("Circuit", [])))
+    weather_events = set(zip(weather.get("Year", []), weather.get("Circuit", [])))
+    completed = result_events & lap_events & weather_events
+
+    for year in years:
+        schedule = fastf1.get_event_schedule(year)
+        schedule = schedule.loc[
+            (schedule["EventFormat"] != "testing") & (schedule["RoundNumber"] > 0)
+        ]
+        for circuit in schedule["EventName"].astype(str):
+            if (year, circuit) in completed:
+                continue
+            try:
+                event_results, event_laps, event_weather = collect_event(year, circuit)
+                results = _append(results, event_results)
+                laps = _append(laps, event_laps)
+                weather = _append(weather, event_weather)
+                results.to_csv(paths["results"], index=False)
+                laps.to_csv(paths["laps"], index=False)
+                weather.to_csv(paths["weather"], index=False)
+                completed.add((year, circuit))
+            except RateLimitExceededError as exc:
+                raise RuntimeError(
+                    "FastF1 rate limit reached. Rerun; complete events are checkpointed."
+                ) from exc
+
+    expected = sum(
+        len(
+            fastf1.get_event_schedule(year).loc[
+                lambda table: (table["EventFormat"] != "testing") & (table["RoundNumber"] > 0)
+            ]
+        )
+        for year in years
+    )
+    if len(completed) < expected:
+        raise RuntimeError(f"Raw extraction incomplete: {len(completed)}/{expected} events")
+    print(
+        f"Raw extraction complete: {len(results)} result rows, "
+        f"{len(laps)} lap rows, {len(weather)} weather rows"
+    )
+    return {"results": results, "laps": laps, "weather": weather}
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--years", nargs="+", type=int, default=[2021, 2022, 2023])
-    parser.add_argument("--output-dir", default=".")
+    parser.add_argument("--raw-dir", default="data/raw")
     parser.add_argument("--cache-dir", default="f1_cache")
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
-    collect_dataset(args.years, args.output_dir, args.cache_dir, args.force)
+    collect_raw_dataset(args.years, args.raw_dir, args.cache_dir, args.force)
 
 
 if __name__ == "__main__":

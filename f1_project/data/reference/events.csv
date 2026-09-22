@@ -1,0 +1,67 @@
+event_id,year,round,name,circuit_id,circuit,country,location,format
+2021-01,2021,1,Bahrain Grand Prix,63,Sakhir,Bahrain,Sakhir,conventional
+2021-02,2021,2,Emilia Romagna Grand Prix,6,Imola,Italy,Imola,conventional
+2021-03,2021,3,Portuguese Grand Prix,147,Algarve International Circuit,Portugal,Portimão,conventional
+2021-04,2021,4,Spanish Grand Prix,15,Catalunya,Spain,Barcelona,conventional
+2021-05,2021,5,Monaco Grand Prix,22,Monte Carlo,Monaco,Monte Carlo,conventional
+2021-06,2021,6,Azerbaijan Grand Prix,144,Baku,Azerbaijan,Baku,conventional
+2021-07,2021,7,French Grand Prix,28,Paul Ricard,France,Le Castellet,conventional
+2021-08,2021,8,Styrian Grand Prix,19,Spielberg,Austria,Spielberg,conventional
+2021-09,2021,9,Austrian Grand Prix,19,Spielberg,Austria,Spielberg,conventional
+2021-10,2021,10,British Grand Prix,2,Silverstone,Great Britain,Silverstone,sprint
+2021-11,2021,11,Hungarian Grand Prix,4,Hungaroring,Hungary,Budapest,conventional
+2021-12,2021,12,Belgian Grand Prix,7,Spa-Francorchamps,Belgium,Spa-Francorchamps,conventional
+2021-13,2021,13,Dutch Grand Prix,55,Zandvoort,Netherlands,Zandvoort,conventional
+2021-14,2021,14,Italian Grand Prix,39,Monza,Italy,Monza,sprint
+2021-15,2021,15,Russian Grand Prix,79,Sochi,Russia,Sochi,conventional
+2021-16,2021,16,Turkish Grand Prix,59,Istanbul,Turkey,Istanbul,conventional
+2021-17,2021,17,United States Grand Prix,9,Austin,United States,Austin,conventional
+2021-18,2021,18,Mexico City Grand Prix,65,Mexico City,Mexico,Mexico City,conventional
+2021-19,2021,19,São Paulo Grand Prix,14,Interlagos,Brazil,São Paulo,sprint
+2021-20,2021,20,Qatar Grand Prix,150,Losail,Qatar,Lusail,conventional
+2021-21,2021,21,Saudi Arabian Grand Prix,149,Jeddah,Saudi Arabia,Jeddah,conventional
+2021-22,2021,22,Abu Dhabi Grand Prix,70,Yas Marina Circuit,Abu Dhabi,Yas Island,conventional
+2022-01,2022,1,Bahrain Grand Prix,63,Sakhir,Bahrain,Sakhir,conventional
+2022-02,2022,2,Saudi Arabian Grand Prix,149,Jeddah,Saudi Arabia,Jeddah,conventional
+2022-03,2022,3,Australian Grand Prix,10,Melbourne,Australia,Melbourne,conventional
+2022-04,2022,4,Emilia Romagna Grand Prix,6,Imola,Italy,Imola,sprint
+2022-05,2022,5,Miami Grand Prix,151,Miami,United States,Miami,conventional
+2022-06,2022,6,Spanish Grand Prix,15,Catalunya,Spain,Barcelona,conventional
+2022-07,2022,7,Monaco Grand Prix,22,Monte Carlo,Monaco,Monaco,conventional
+2022-08,2022,8,Azerbaijan Grand Prix,144,Baku,Azerbaijan,Baku,conventional
+2022-09,2022,9,Canadian Grand Prix,23,Montreal,Canada,Montréal,conventional
+2022-10,2022,10,British Grand Prix,2,Silverstone,Great Britain,Silverstone,conventional
+2022-11,2022,11,Austrian Grand Prix,19,Spielberg,Austria,Spielberg,sprint
+2022-12,2022,12,French Grand Prix,28,Paul Ricard,France,Le Castellet,conventional
+2022-13,2022,13,Hungarian Grand Prix,4,Hungaroring,Hungary,Budapest,conventional
+2022-14,2022,14,Belgian Grand Prix,7,Spa-Francorchamps,Belgium,Spa-Francorchamps,conventional
+2022-15,2022,15,Dutch Grand Prix,55,Zandvoort,Netherlands,Zandvoort,conventional
+2022-16,2022,16,Italian Grand Prix,39,Monza,Italy,Monza,conventional
+2022-17,2022,17,Singapore Grand Prix,61,Singapore,Singapore,Marina Bay,conventional
+2022-18,2022,18,Japanese Grand Prix,46,Suzuka,Japan,Suzuka,conventional
+2022-19,2022,19,United States Grand Prix,9,Austin,United States,Austin,conventional
+2022-20,2022,20,Mexico City Grand Prix,65,Mexico City,Mexico,Mexico City,conventional
+2022-21,2022,21,São Paulo Grand Prix,14,Interlagos,Brazil,São Paulo,sprint
+2022-22,2022,22,Abu Dhabi Grand Prix,70,Yas Marina Circuit,Abu Dhabi,Yas Island,conventional
+2023-01,2023,1,Bahrain Grand Prix,63,Sakhir,Bahrain,Sakhir,conventional
+2023-02,2023,2,Saudi Arabian Grand Prix,149,Jeddah,Saudi Arabia,Jeddah,conventional
+2023-03,2023,3,Australian Grand Prix,10,Melbourne,Australia,Melbourne,conventional
+2023-04,2023,4,Azerbaijan Grand Prix,144,Baku,Azerbaijan,Baku,sprint_shootout
+2023-05,2023,5,Miami Grand Prix,151,Miami,United States,Miami,conventional
+2023-06,2023,6,Monaco Grand Prix,22,Monte Carlo,Monaco,Monaco,conventional
+2023-07,2023,7,Spanish Grand Prix,15,Catalunya,Spain,Barcelona,conventional
+2023-08,2023,8,Canadian Grand Prix,23,Montreal,Canada,Montréal,conventional
+2023-09,2023,9,Austrian Grand Prix,19,Spielberg,Austria,Spielberg,sprint_shootout
+2023-10,2023,10,British Grand Prix,2,Silverstone,Great Britain,Silverstone,conventional
+2023-11,2023,11,Hungarian Grand Prix,4,Hungaroring,Hungary,Budapest,conventional
+2023-12,2023,12,Belgian Grand Prix,7,Spa-Francorchamps,Belgium,Spa-Francorchamps,sprint_shootout
+2023-13,2023,13,Dutch Grand Prix,55,Zandvoort,Netherlands,Zandvoort,conventional
+2023-14,2023,14,Italian Grand Prix,39,Monza,Italy,Monza,conventional
+2023-15,2023,15,Singapore Grand Prix,61,Singapore,Singapore,Marina Bay,conventional
+2023-16,2023,16,Japanese Grand Prix,46,Suzuka,Japan,Suzuka,conventional
+2023-17,2023,17,Qatar Grand Prix,150,Lusail,Qatar,Lusail,sprint_shootout
+2023-18,2023,18,United States Grand Prix,9,Austin,United States,Austin,sprint_shootout
+2023-19,2023,19,Mexico City Grand Prix,65,Mexico City,Mexico,Mexico City,conventional
+2023-20,2023,20,São Paulo Grand Prix,14,Interlagos,Brazil,São Paulo,sprint_shootout
+2023-21,2023,21,Las Vegas Grand Prix,152,Las Vegas,United States,Las Vegas,conventional
+2023-22,2023,22,Abu Dhabi Grand Prix,70,Yas Marina Circuit,Abu Dhabi,Yas Island,conventional

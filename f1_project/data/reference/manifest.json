@@ -1,0 +1,10 @@
+{
+  "version": "2021-2023.v1",
+  "source": "FastF1 3.8.3 selected source columns",
+  "hash_normalization": "CRLF to LF",
+  "sha256": {
+    "practice_laps.csv": "dad02e0f42d252a41ba5f7cf3ac29b418d50d9bffd39d4fb52892f6df672a556",
+    "qualifying_results.csv": "adb4565b7085cb09305851349f34e8d831aac9d351e174b8a1dd3463d0c9739c",
+    "qualifying_weather.csv": "d033ba6a151ca952aedbb7805bb3f3f49069737b1335a51a1986c04e61bbb7b5"
+  }
+}
