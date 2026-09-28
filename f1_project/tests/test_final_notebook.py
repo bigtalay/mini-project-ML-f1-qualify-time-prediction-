@@ -1,6 +1,7 @@
 """Exercise notebook logic on synthetic rows, without network or project data."""
 import contextlib
 import io
+import hashlib
 from pathlib import Path
 import tempfile
 import unittest
@@ -71,10 +72,11 @@ class FinalNotebookTest(unittest.TestCase):
         laps.append({**laps[0], 'Compound': 'HARD'})
         laps.append(laps[1].copy())
         with tempfile.TemporaryDirectory() as folder, contextlib.redirect_stdout(io.StringIO()):
-            namespace = dict(pd=pd, np=np, joblib=joblib, display=lambda *args: None,
+            namespace = dict(pd=pd, np=np, joblib=joblib, hashlib=hashlib, display=lambda *args: None,
                              laps=pd.DataFrame(laps), results=pd.DataFrame(results),
                              events=pd.DataFrame(events), sessions=pd.DataFrame(sessions),
-                             PROCESSED=Path(folder), MODELS=Path(folder), YEARS=[2021, 2022, 2023])
+                             PROCESSED=Path(folder), MODELS=Path(folder), YEARS=[2021, 2022, 2023],
+                             CIRCUIT_FILE=Path(__file__).resolve().parents[1] / 'data/final/reference/circuits.csv')
             for tag in ['clean', 'cutoff', 'features', 'missing', 'split', 'impute', 'encode',
                         'train', 'tune', 'refit', 'evaluate', 'save', 'predict']:
                 if tag == 'save':
@@ -91,9 +93,9 @@ class FinalNotebookTest(unittest.TestCase):
             features = namespace['features']
             self.assertTrue(features.loc[features.event_id.eq('2023-01'), 'FP3_Time'].isna().all())
             first = features.loc[features.event_id.eq('2021-01') & features.Driver.eq('D0')].iloc[0]
-            self.assertEqual(first.FP1_Compound, 'SOFT')
+            self.assertEqual(first.FP1_source_row, 2)
             self.assertTrue(pd.isna(first.FP2_Time))
-            self.assertEqual(len(namespace['FEATURES']), 9)
+            self.assertEqual(namespace['FEATURES'], ['FP1_Time', 'FP2_Time', 'FP3_Time', 'circuit_length_km', 'corner_count'])
             self.assertFalse(set(namespace['FEATURES']) & {'Driver', 'Year', 'event_id', 'Team', 'QualiTime'})
             self.assertTrue(namespace['X_train'].notna().all().all())
             self.assertEqual(set(namespace['train'].Year), {2021})

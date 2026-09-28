@@ -1,23 +1,23 @@
 Model,Parameters,MAE,RMSE
-SVR (RBF),"{'C': 100, 'epsilon': 0.5, 'gamma': 'scale'}",2.7588828342754685,4.932036091564659
-SVR (RBF),{},2.736838552781151,4.952356256018448
-SVR (RBF),"{'C': 100, 'epsilon': 0.1, 'gamma': 'scale'}",2.736838552781151,4.952356256018448
-SVR (RBF),"{'C': 10, 'epsilon': 0.1, 'gamma': 0.01}",2.7292530847277594,4.972668103989752
-SVR (RBF),"{'C': 10, 'epsilon': 0.5, 'gamma': 0.01}",2.7829223616132115,4.99941557445342
-SVR (RBF),"{'C': 10, 'epsilon': 0.5, 'gamma': 'scale'}",2.8352576037378534,5.004385359412226
-SVR (RBF),"{'C': 100, 'epsilon': 0.1, 'gamma': 0.01}",2.698955308438898,5.035852185368316
-SVR (RBF),"{'C': 10, 'epsilon': 0.1, 'gamma': 'scale'}",2.83967839384131,5.045746217972668
-SVR (RBF),"{'C': 100, 'epsilon': 0.5, 'gamma': 0.01}",2.733542452567433,5.065694035922391
-Linear Regression,{},3.3364179015199427,5.374856961698915
-Linear Regression,{'fit_intercept': True},3.3364179015199427,5.374856961698915
-Gradient Boosting,{},3.0626478491635774,5.972579855047978
-Gradient Boosting,"{'learning_rate': 0.05, 'max_depth': 2}",3.0626478491635774,5.972579855047978
-Gradient Boosting,"{'learning_rate': 0.03, 'max_depth': 2}",3.233035230462024,6.056643815712508
-Gradient Boosting,"{'learning_rate': 0.05, 'max_depth': 3}",3.2386037957866503,6.3416691034341905
-Gradient Boosting,"{'learning_rate': 0.03, 'max_depth': 3}",3.277876407187573,6.4016185161364065
-Random Forest,"{'max_depth': 10, 'min_samples_leaf': 3}",3.5822724983711196,6.792741799536487
-Random Forest,{},3.584396238167785,6.794922240594777
-Random Forest,"{'max_depth': None, 'min_samples_leaf': 3}",3.5843962381677854,6.794922240594777
-Random Forest,"{'max_depth': None, 'min_samples_leaf': 1}",3.5671074159021416,6.81791028786772
-Random Forest,"{'max_depth': 10, 'min_samples_leaf': 1}",3.612871685577223,6.899757167833742
-Linear Regression,{'fit_intercept': False},10.016783815549354,18.378878778323624
+SVR (RBF),"{'C': 100, 'epsilon': 0.1, 'gamma': 0.01}",2.7034114049162663,4.74904320156626
+SVR (RBF),"{'C': 100, 'epsilon': 0.5, 'gamma': 0.01}",2.7994830711087837,4.786357281907964
+SVR (RBF),"{'C': 10, 'epsilon': 0.1, 'gamma': 0.01}",2.8409969078214887,4.915530386898253
+SVR (RBF),"{'C': 10, 'epsilon': 0.5, 'gamma': 0.01}",2.904879839968385,4.918013544933892
+Linear Regression,{},3.333062446530799,5.3013210216971345
+Linear Regression,{'fit_intercept': True},3.333062446530799,5.3013210216971345
+Random Forest,{},3.0586476503018765,5.360868976226749
+Random Forest,"{'max_depth': None, 'min_samples_leaf': 3}",3.058647650301877,5.360868976226753
+Random Forest,"{'max_depth': 10, 'min_samples_leaf': 3}",3.064102996207414,5.371637340706075
+Random Forest,"{'max_depth': 10, 'min_samples_leaf': 1}",3.0536536726029837,5.384065505859281
+Random Forest,"{'max_depth': None, 'min_samples_leaf': 1}",3.0883020479103043,5.441350460139167
+Gradient Boosting,"{'learning_rate': 0.03, 'max_depth': 3}",3.5720590281024496,6.177725395651335
+Gradient Boosting,"{'learning_rate': 0.05, 'max_depth': 3}",3.5991533373879214,6.212196272302103
+Gradient Boosting,{},3.619480115715956,6.366626540472695
+Gradient Boosting,"{'learning_rate': 0.05, 'max_depth': 2}",3.619480115715956,6.366626540472695
+Gradient Boosting,"{'learning_rate': 0.03, 'max_depth': 2}",3.6757665579488505,6.3738584670305745
+SVR (RBF),"{'C': 10, 'epsilon': 0.5, 'gamma': 'scale'}",3.6179334555166593,6.83159801191347
+SVR (RBF),"{'C': 10, 'epsilon': 0.1, 'gamma': 'scale'}",3.648282422996835,6.916586783674775
+SVR (RBF),{},3.837935396989278,8.022668933929028
+SVR (RBF),"{'C': 100, 'epsilon': 0.1, 'gamma': 'scale'}",3.837935396989278,8.022668933929028
+SVR (RBF),"{'C': 100, 'epsilon': 0.5, 'gamma': 'scale'}",3.9060180033986884,8.23140404945703
+Linear Regression,{'fit_intercept': False},81.79366579353919,81.9479712937688
