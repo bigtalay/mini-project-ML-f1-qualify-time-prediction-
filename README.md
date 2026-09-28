@@ -2,9 +2,11 @@
 
 ## โมเดลเว็บปัจจุบัน: final.ipynb
 
-Branch `docker` รวม CSV ราย event ปี 2021–2023 ครบ 66 รายการ พร้อม `complete.json`, ข้อมูล processed และโมเดลที่บันทึกแล้ว เมื่อเปิด `final.ipynb` และรัน setup/ตาราง events ก่อนข้อ 2.4 จะขึ้น `มี CSV ครบแล้ว` ทั้ง 66 รายการ ไม่ต้องมี FastF1 cache สำหรับขั้นนี้ ห้ามเปลี่ยน line endings ของ snapshot เพราะ checksum ตรวจแบบ byte-for-byte (`.gitattributes` กำหนดไว้แล้ว) ข้อ 2.2 ยังอาจเรียกตารางฤดูกาลจาก FastF1
+Branch `docker` รวม CSV ราย event ปี 2021–2023 ครบ 66 รายการ พร้อม `complete.json`, ข้อมูล processed และโมเดลที่บันทึกแล้ว เมื่อเปิด `final.ipynb` และรัน setup/ตาราง events ก่อนข้อ 2.4 จะขึ้น `มี CSV ครบแล้ว` ทั้ง 66 รายการ ไม่ต้องมี FastF1 cache สำหรับขั้นนี้ ห้ามเปลี่ยน line endings ของ snapshot เพราะ checksum ตรวจแบบ byte-for-byte (`.gitattributes` กำหนดไว้แล้ว) ข้อ 2.2 อ่านตารางฤดูกาล snapshot ก่อน ถ้าไม่มีจึงเรียก FastF1
 
-เว็บโหลด `f1_project/data/final/models/qualifying.joblib` โดยตรง ไม่ฝึกใหม่และไม่เรียก FastF1 ตอนเปิด ใช้ 9 features เวลา/Compound/TyreLife ของ FP1–FP3 ตาม Notebook; ปี 2021 ฝึก, ปี 2022 เลือกโมเดลและ tuning, refit 2021–2022, ปี 2023 ประเมินย้อนหลัง ไม่มี calibration interval สำหรับโมเดลรุ่นนี้
+เว็บโหลด `f1_project/data/final/models/qualifying-circuit.joblib` โดยตรง ไม่ฝึกใหม่และไม่เรียก FastF1 ตอนเปิด ใช้ 5 features: FP1_Time, FP2_Time, FP3_Time, circuit_length_km, corner_count ตาม Notebook; ปี 2021 ฝึก, ปี 2022 เลือกโมเดลและ tuning, refit 2021–2022, ปี 2023 ประเมินย้อนหลัง ไม่มี calibration interval สำหรับโมเดลรุ่นนี้
+
+รายละเอียดสนามอยู่ใน `data/final/reference/circuits.csv` จาก [F1DB](https://github.com/f1db/f1db) (CC BY 4.0) มี URL และผังตามปีครบ 66 รายการ ดูข้อยกเว้นการจับคู่และ attribution ใน [reference README](f1_project/data/final/reference/README.md) หน้า Prediction ต้องเลือกปี/สนามด้านบน แล้วกรอกเฉพาะเวลา ไม่มีช่องยาง โมเดลรุ่นเก่า `qualifying.joblib` เก็บเป็นประวัติ ไม่ได้ใช้บนเว็บ
 
 ต้องมีผลจาก Notebook ข้อ 2–5 ใน `data/final/` ก่อนเปิดเว็บ (หาก clone แล้วไม่มีข้อมูล/โมเดล ให้รัน `final.ipynb` ก่อน) จากนั้น `docker compose up --build -d app` แล้วเปิด http://localhost:8501/?view=prediction การเปิดเว็บไม่ได้ติดตั้งข้อมูลเก่ากลับมา และไม่เปลี่ยน raw; ตรวจ checksum กับโมเดลก่อนเริ่ม
 

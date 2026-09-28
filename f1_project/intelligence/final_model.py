@@ -5,14 +5,25 @@ import numpy as np
 import pandas as pd
 
 from .data import ROOT, Dataset, records, flag
-from .tyre_model import parse_time, SESSIONS, TIMES, AGES, COMPOUNDS
+from .tyre_model import parse_time
+
+SESSIONS = ["FP1", "FP2", "FP3"]
+TIMES = [f"{s}_Time" for s in SESSIONS]
+CIRCUIT_FEATURES = ["circuit_length_km", "corner_count"]
+FEATURES = TIMES + CIRCUIT_FEATURES
 from .ml import metrics
 
 FINAL = ROOT / 'data/final'
 
 
 def load_final():
-    bundle = joblib.load(FINAL / 'models/qualifying.joblib')
+    bundle = joblib.load(FINAL / 'models/qualifying-circuit.joblib')
+    if bundle.get('version') != 'practice-circuit-v1' or bundle['features'] != FEATURES:
+        raise ValueError('Run final.ipynb to save the practice-circuit-v1 model')
+    circuit_file = FINAL / 'reference/circuits.csv'
+    if hashlib.sha256(circuit_file.read_bytes()).hexdigest() != bundle['circuit_checksum']:
+        raise ValueError('Circuit reference changed since training')
+    bundle['circuits'] = pd.read_csv(circuit_file).set_index('event_id')
     for name, expected in bundle['raw_checksums'].items():
         if hashlib.sha256((FINAL / 'raw' / name).read_bytes()).hexdigest() != expected:
             raise ValueError(f'Raw changed since notebook training: {name}')
@@ -24,7 +35,11 @@ def load_final():
         'Country': 'country', 'Location': 'location', 'EventFormat': 'format'})
     events['circuit'] = events.location
     events['circuit_id'] = events.location
-    ds.events = events
+    if set(events.event_id) != set(bundle['circuits'].index) or not bundle['circuits'].index.is_unique:
+        raise ValueError('Circuit reference must match every event exactly once')
+    ds.events = events.drop(columns=['circuit_id']).merge(bundle['circuits'].reset_index(), on='event_id', validate='one_to_one')
+    if ds.events[CIRCUIT_FEATURES].isna().any().any():
+        raise ValueError('Circuit reference does not cover events')
     ds.sessions = pd.read_csv(FINAL / 'raw/sessions.csv').rename(columns={'Session': 'session', 'source_path': 'timing_source'})
     for c in ['start_utc', 'end_utc']:
         ds.sessions[c] = pd.to_datetime(ds.sessions[c], utc=True)
@@ -51,7 +66,7 @@ def load_final():
     # Recompute reports with this exact artifact, so stale CSV scores cannot mislabel the model.
     model_data = pd.read_csv(FINAL / 'processed/model_dataset.csv')
     testing = model_data.loc[model_data.Year.eq(2023)].copy()
-    testing['prediction'] = bundle['model'].predict(testing[bundle['features']].fillna(bundle['age_medians']))
+    testing['prediction'] = bundle['model'].predict(testing[bundle['features']])
     testing['error'] = testing.prediction - testing.QualiTime
     testing['model'] = bundle['selected']
     testing['lower'], testing['upper'] = np.nan, np.nan
@@ -62,47 +77,38 @@ def load_final():
         'test': [{'model': bundle['selected'], **metrics(testing.QualiTime, testing.prediction)},
                  {'model': 'Practice baseline', **metrics(testing.QualiTime, testing[TIMES].min(axis=1))}],
         'per_event': [{'event_id': event, 'model': bundle['selected'], **metrics(g.QualiTime, g.prediction)} for event, g in testing.groupby('event_id')],
-        'interval': None, 'groups': [], 'winners': {'Time + tyres': bundle['selected']},
+        'interval': None, 'groups': [], 'winners': {'Time + circuit': bundle['selected']},
         'partitions': {name: {'rows': len(g), 'events': sorted(g.event_id.unique())}
                        for name, year in [('training', 2021), ('selection', 2022), ('test', 2023)]
                        for g in [model_data.loc[model_data.Year.eq(year)]]},
         'selected_features': bundle['features'], 'raw_features': bundle['features'],
         'excluded_test_rows': int(ds.features.Year.eq(2023).sum() - len(testing)),
-        'input_ranges': {c: {'min': float(bundle['numeric_min'][c]), 'max': float(bundle['numeric_max'][c])} for c in TIMES + AGES},
+        'input_ranges': {c: {'min': float(bundle['numeric_min'][c]), 'max': float(bundle['numeric_max'][c])} for c in FEATURES},
     }
     return ds, bundle, testing
 
 
-def custom_predict(bundle, sessions):
-    supplied = {s: v for s, v in sessions.items() if v is not None}
+def custom_predict(bundle, payload):
+    event_id = payload.get('event_id')
+    if event_id not in bundle['circuits'].index:
+        raise ValueError('เลือกสนามและปีที่มีข้อมูลอ้างอิง')
+    supplied = {s: payload.get(s) for s in SESSIONS if payload.get(s) is not None}
     if not supplied:
         raise ValueError('ต้องมี Practice อย่างน้อยหนึ่ง session')
-    normalized = {}
-    for s, value in supplied.items():
-        age = value.get('tyre_life')
-        if age is not None and (not np.isfinite(age) or age < 0):
-            raise ValueError('อายุยางต้องเป็นตัวเลขตั้งแต่ 0 ขึ้นไป')
-        compound = value.get('compound') or 'UNKNOWN'
-        normalized[s] = {'Time': parse_time(value['time']), 'Compound': 'UNKNOWN' if compound == 'TEST_UNKNOWN' else compound, 'TyreLife': age}
-    donor = min(normalized, key=lambda s: (normalized[s]['Time'], SESSIONS.index(s)))
+    times = {s: parse_time(v['time']) for s, v in supplied.items()}
+    donor = min(times, key=lambda s: (times[s], SESSIONS.index(s)))
     row, imputations, warnings = {}, [], []
     for s in SESSIONS:
-        values = normalized.get(s, normalized[donor])
-        if s not in normalized:
-            imputations.append(f'{s}: เติมเวลาและยางจาก {donor}')
-        for field, value in values.items():
-            row[f'{s}_{field}'] = value
-        if row[f'{s}_TyreLife'] is None:
-            row[f'{s}_TyreLife'] = float(bundle['age_medians'][f'{s}_TyreLife'])
-            imputations.append(f'{s}: เติมอายุยางด้วย median ชุดฝึก')
-    for c in TIMES + AGES:
+        row[f'{s}_Time'] = times.get(s, times[donor])
+        if s not in times:
+            imputations.append(f'{s}: เติมเวลาจาก {donor}')
+    circuit = bundle['circuits'].loc[event_id]
+    for c in CIRCUIT_FEATURES:
+        row[c] = float(circuit[c])
+    for c in FEATURES:
         if not bundle['numeric_min'][c] <= row[c] <= bundle['numeric_max'][c]:
             warnings.append(f'{c}: อยู่นอกช่วงข้อมูลฝึก')
-    encoder = bundle['model'].named_steps['preprocess'].named_transformers_['compound']
-    for c, known in zip(COMPOUNDS, encoder.categories_):
-        if row[c] not in known:
-            warnings.append(f'{c}: ไม่พบชนิดยางนี้ในชุดฝึก')
-    frame = pd.DataFrame([row])[bundle['features']]
+    frame = pd.DataFrame([row])[FEATURES]
     predicted = float(bundle['model'].predict(frame)[0])
     if not np.isfinite(predicted) or predicted <= 0:
         raise ValueError('โมเดลให้เวลาที่ไม่สมเหตุผลสำหรับ input นี้')
@@ -110,23 +116,21 @@ def custom_predict(bundle, sessions):
             'inputs': records(frame)[0], 'imputations': imputations, 'warnings': warnings}
 
 
-def scenario(dataset, bundle, event_id, driver, overrides, tyre_overrides=None):
+def scenario(dataset, bundle, event_id, driver, overrides, session_overrides=None):
     rows = dataset.features.loc[dataset.features.event_id.eq(event_id) & dataset.features.Driver.eq(driver)]
     if rows.empty or not event_id.startswith('2023-'):
         raise ValueError('เลือกนักขับและรายการปี 2023 ที่มีข้อมูล')
     row = rows.iloc[0]
-    sessions = {s: {'time': row[f'{s}_Time'], 'compound': row[f'{s}_Compound'] if pd.notna(row[f'{s}_Compound']) else None,
-                    'tyre_life': row[f'{s}_TyreLife'] if pd.notna(row[f'{s}_TyreLife']) else None}
-                for s in SESSIONS if pd.notna(row[f'{s}_Time'])}
-    baseline = custom_predict(bundle, sessions)['prediction']
+    sessions = {s: {'time': row[f'{s}_Time']} for s in SESSIONS if pd.notna(row[f'{s}_Time'])}
+    baseline = custom_predict(bundle, {'event_id': event_id, **sessions})['prediction']
     for key, value in overrides.items():
         s = key.split('_')[0]
         if s not in sessions:
             raise ValueError('ไม่มี session นี้ก่อน Qualifying')
         sessions[s]['time'] = value
-    for s, value in (tyre_overrides or {}).items():
+    for s, value in (session_overrides or {}).items():
         if s not in sessions:
             raise ValueError('ไม่มี session นี้ก่อน Qualifying')
         sessions[s] = value
-    result = custom_predict(bundle, sessions)
+    result = custom_predict(bundle, {'event_id': event_id, **sessions})
     return {**result, 'baseline': baseline, 'delta': result['prediction'] - baseline}

@@ -62,9 +62,8 @@ test("what-if uses the selected event, shows limitations and validates inputs", 
   await expect(
     page.getByText(/ปี 2023 เคยใช้วิเคราะห์ปัญหาแล้ว/),
   ).toBeVisible();
-  await expect(page.getByLabel("FP2 ชนิดยาง")).toHaveValue("SOFT");
-  await page.getByLabel("FP2 อายุยาง").fill("12");
-  await expect(page.getByTestId("scenario-result")).toBeVisible();
+  await expect(page.getByLabel("FP2 ชนิดยาง")).toHaveCount(0);
+  await expect(page.getByText(/ความยาวสนาม 5.412 km/)).toBeVisible();
   await input.fill("-1");
   await expect(page.getByRole("alert")).toContainText(
     "เวลา Practice ต้องมากกว่า 0",
@@ -83,27 +82,25 @@ test("what-if uses the selected event, shows limitations and validates inputs", 
   ).toHaveAttribute("aria-pressed", "true");
 });
 
-test("manual tyres, missing sessions, API parity, source lap and export", async ({
+test("manual circuit inputs, missing sessions, API parity, source lap and export", async ({
   page,
 }, info) => {
   await page.goto("/?year=2023&event=2023-01&view=prediction&mode=manual");
   await page.getByLabel("What-if FP1_Time", { exact: true }).fill("1:30.000");
-  await page.getByLabel("FP1 ชนิดยาง").selectOption("SOFT");
-  await page.getByLabel("FP1 อายุยาง").fill("3");
+  await expect(page.getByLabel("FP1 ชนิดยาง")).toHaveCount(0);
+  await expect(page.getByText(/ความยาวสนาม 5.412 km/)).toBeVisible();
   const result = page.getByTestId("scenario-result");
-  await expect(result).toContainText("FP2: เติมเวลาและยางจาก FP1");
+  await expect(result).toContainText("FP2: เติมเวลาจาก FP1");
   const response = await page.request.post("/api/v1/predict/custom", {
-    data: { FP1: { time: "1:30.000", compound: "SOFT", tyre_life: 3 } },
+    data: { event_id: "2023-01", FP1: { time: "1:30.000" } },
   });
   const body = await response.json();
   const milliseconds = Math.round(body.prediction * 1000);
   const formatted = `${Math.floor(milliseconds / 60000)}:${((milliseconds % 60000) / 1000).toFixed(3).padStart(6, "0")}`;
   await expect(result.locator("strong")).toHaveText(formatted);
-  await page.getByLabel("FP1 อายุยาง").fill("-1");
-  await expect(page.getByRole("alert")).toContainText("อายุยางต้องไม่ติดลบ");
-  await expect(result).toHaveCount(0);
-  await page.getByLabel("FP1 อายุยาง").fill("");
-  await expect(result).toContainText("median ชุดฝึก");
+  expect(body.inputs.circuit_length_km).toBe(5.412);
+  expect(body.inputs.corner_count).toBe(15);
+  expect(Object.keys(body.inputs)).toHaveLength(5);
   await page.getByLabel("มีข้อมูล FP1", { exact: true }).uncheck();
   await expect(page.getByRole("alert")).toContainText("ไม่มี Practice");
   await page.getByLabel("มีข้อมูล FP2", { exact: true }).check();
@@ -139,7 +136,8 @@ test("manual tyres, missing sessions, API parity, source lap and export", async 
     .click();
   const downloaded = await downloadPromise;
   const csv = await fs.readFile((await downloaded.path())!, "utf8");
-  expect(csv).toContain("FP2_Compound");
+  expect(csv).toContain("circuit_length_km");
+  expect(csv).not.toContain("FP2_Compound");
   expect(csv).toContain("FP2_lap_id");
 });
 

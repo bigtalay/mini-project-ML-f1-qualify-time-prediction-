@@ -27,6 +27,10 @@ class Event(BaseModel):
     country: str
     location: str
     format: str
+    circuit_length_km: float
+    corner_count: int
+    layout_id: str
+    source_url: str
 
 
 class Result(BaseModel):
@@ -182,12 +186,8 @@ class PredictionRow(BaseModel):
     lower: float | None = None
     upper: float | None = None
     predictable: bool
-    FP1_Compound: str | None = None
-    FP2_Compound: str | None = None
-    FP3_Compound: str | None = None
-    FP1_TyreLife: float | None = None
-    FP2_TyreLife: float | None = None
-    FP3_TyreLife: float | None = None
+    circuit_length_km: float
+    corner_count: int
     FP1_lap_id: str | None = None
     FP2_lap_id: str | None = None
     FP3_lap_id: str | None = None
@@ -196,10 +196,8 @@ class PredictionRow(BaseModel):
 class PracticeInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
     time: str | float
-    compound: str | None = None
-    tyre_life: float | None = Field(default=None, ge=0, allow_inf_nan=False)
 
-    @field_validator("time", "tyre_life", mode="before")
+    @field_validator("time", mode="before")
     @classmethod
     def reject_boolean(cls, value):
         if isinstance(value, bool):
@@ -209,6 +207,7 @@ class PracticeInput(BaseModel):
 
 class CustomRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
+    event_id: str
     FP1: PracticeInput | None = None
     FP2: PracticeInput | None = None
     FP3: PracticeInput | None = None

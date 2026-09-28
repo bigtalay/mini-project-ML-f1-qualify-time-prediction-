@@ -755,6 +755,10 @@
       },
       "CustomRequest": {
         "properties": {
+          "event_id": {
+            "type": "string",
+            "title": "Event Id"
+          },
           "FP1": {
             "anyOf": [
               {
@@ -788,6 +792,9 @@
         },
         "additionalProperties": false,
         "type": "object",
+        "required": [
+          "event_id"
+        ],
         "title": "CustomRequest"
       },
       "CustomResponse": {
@@ -1004,6 +1011,22 @@
           "format": {
             "type": "string",
             "title": "Format"
+          },
+          "circuit_length_km": {
+            "type": "number",
+            "title": "Circuit Length Km"
+          },
+          "corner_count": {
+            "type": "integer",
+            "title": "Corner Count"
+          },
+          "layout_id": {
+            "type": "string",
+            "title": "Layout Id"
+          },
+          "source_url": {
+            "type": "string",
+            "title": "Source Url"
           }
         },
         "type": "object",
@@ -1016,7 +1039,11 @@
           "circuit",
           "country",
           "location",
-          "format"
+          "format",
+          "circuit_length_km",
+          "corner_count",
+          "layout_id",
+          "source_url"
         ],
         "title": "Event"
       },
@@ -1489,29 +1516,6 @@
               }
             ],
             "title": "Time"
-          },
-          "compound": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Compound"
-          },
-          "tyre_life": {
-            "anyOf": [
-              {
-                "type": "number",
-                "minimum": 0.0
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Tyre Life"
           }
         },
         "additionalProperties": false,
@@ -1623,71 +1627,13 @@
             "type": "boolean",
             "title": "Predictable"
           },
-          "FP1_Compound": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Fp1 Compound"
+          "circuit_length_km": {
+            "type": "number",
+            "title": "Circuit Length Km"
           },
-          "FP2_Compound": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Fp2 Compound"
-          },
-          "FP3_Compound": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Fp3 Compound"
-          },
-          "FP1_TyreLife": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Fp1 Tyrelife"
-          },
-          "FP2_TyreLife": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Fp2 Tyrelife"
-          },
-          "FP3_TyreLife": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Fp3 Tyrelife"
+          "corner_count": {
+            "type": "integer",
+            "title": "Corner Count"
           },
           "FP1_lap_id": {
             "anyOf": [
@@ -1727,7 +1673,9 @@
         "required": [
           "event_id",
           "Driver",
-          "predictable"
+          "predictable",
+          "circuit_length_km",
+          "corner_count"
         ],
         "title": "PredictionRow"
       },

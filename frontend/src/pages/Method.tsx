@@ -151,18 +151,20 @@ export default function Method({
             ที่แหล่งข้อมูลรายงาน ไม่ใช่การวัดเวลาจบจริงใหม่ของเรา
           </p>
           <p>
-            ไม่ใช้ชื่อทีม นักขับ สนาม ปี weather, Q1/Q2/Q3 หรือ Position เป็น
+            ไม่ใช้ชื่อทีม นักขับ รหัสสนาม ปี ยาง weather, Q1/Q2/Q3 หรือ Position เป็น
             feature
           </p>
           <h3>การเตรียม input</h3>
           <p>
-            ใช้เวลา+ชนิดยาง+อายุยาง 9 คอลัมน์จาก final.ipynb
-            session หายจะคัดลอกทั้ง triple จาก Practice
-            ที่เร็วที่สุดที่มีในแถวนั้น อายุยางขาดใช้ median ของชุดฝึก
-            (คอลัมน์ว่างใช้ median รวมของ Practice ในชุดฝึก) ชนิดยางไม่ทราบเป็น
-            UNKNOWN แล้ว One-hot Encoding; ตัวเลขใช้ StandardScaler ไม่ใช้
-            Target Encoding, PCA หรือ feature selection และ fit preprocessing
-            เฉพาะชุดฝึก
+            ใช้เวลา FP1–FP3 + ความยาวสนาม (km) + จำนวนโค้ง รวม 5 คอลัมน์
+            session หายจะเติมเวลาจาก Practice ที่เร็วที่สุดที่มีในแถวนั้น
+            ไม่มี Practice เลยไม่ทำนาย ไม่ใช้ชนิดยางหรืออายุยางในโมเดล
+            ตัวเลขใช้ StandardScaler ที่ fit เฉพาะชุดฝึก ไม่ใช้ One-hot Encoding
+          </p>
+          <p>
+            รายละเอียดสนามจาก F1DB (CC BY 4.0) จับคู่ผังตามปีครบ 66 รายการ
+            เช่น Barcelona และ Singapore เปลี่ยนผังในปี 2023
+            เก็บ URL ต้นทางและตรวจ checksum ก่อนโหลดโมเดล ไม่มีการเดาค่าที่ขาด
           </p>
           <h3>แบ่งข้อมูลตามปี</h3>
           <Status {...evaluation} />
@@ -189,7 +191,7 @@ export default function Method({
           <p>
             ทดลอง Linear Regression, Random Forest, Gradient Boosting และ SVR
             ปรับพารามิเตอร์ด้วย ParameterGrid เลือกจาก validation RMSE
-            เว็บโหลด qualifying.joblib ที่ Notebook บันทึก ไม่ฝึกซ้ำตอนเปิด
+            เว็บโหลด qualifying-circuit.joblib ที่ Notebook บันทึก ไม่ฝึกซ้ำตอนเปิด
             และแสดงผลเทียบ baseline ตามจริง
           </p>
           <h3>สิ่งที่กราฟยังตอบไม่ได้</h3>

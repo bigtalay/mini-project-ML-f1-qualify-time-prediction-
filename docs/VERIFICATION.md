@@ -102,3 +102,11 @@ No live telemetry, fuel/setup inference, causal effect claims, authentication or
 - Playwright Chromium: history inputs, manual FP1=1:30.000/SOFT/3 → 1:28.887; missing FP2/FP3 provenance shown. Invalid time `abc` shows validation message (expected HTTP 422). Checked 390×844 mobile and 1440×1000 desktop. Screenshots in `output/playwright/final-model-*.png`.
 - Model report recomputed from loaded artifact: 431 rows, MAE 2.372987 / RMSE 4.957968 seconds; baseline MAE 2.246914 / RMSE 4.433238. No calibration interval exists for this notebook; API returns null and UI does not reuse old intervals.
 - Prior verification entries below describe earlier model versions, not the active notebook model.
+# Practice + circuit model — 2026-09-28
+
+- Replaced tyre features with exactly FP1_Time, FP2_Time, FP3_Time, circuit_length_km, corner_count in final.ipynb and the web. F1DB snapshot covers all 66 events with historical layout IDs, pinned source URLs and CC BY 4.0 attribution.
+- Notebook Run All passed with existing snapshots; no FastF1 download needed. Raw files and per-event completion checksums unchanged (git diff and notebook hash assertion).
+- Four-model training/tuning uses 2021 training and 2022 validation only; selected SVR(C=100, epsilon=0.1, gamma=0.01). Refit 2021–2022. Retrospective 2023: 431 rows, MAE 1.555394, RMSE 3.254304 seconds. Baseline: MAE 2.246914, RMSE 4.433238. 2023 is not an untouched holdout.
+- New artifact: models/qualifying-circuit.joblib, version practice-circuit-v1. Old qualifying.joblib is historical only. API checks raw/circuit hashes and rejects tyre input and unknown event IDs.
+- Python notebook/snapshot/API checks: 4 passed. Notebook saved predictions, artifact and custom API match; Barcelona/Singapore layout changes covered. Schema generation, lint, production build and Docker startup passed.
+- Existing Playwright E2E suite updated for circuit inputs: 14 passed across desktop/mobile, including input validation, source laps, exports, URL state, and timing thresholds. CLI screenshots inspected at 390×844 and 1440×1000 under output/playwright/circuit-model-*.png. Existing favicon 404 and chart bundle-size warning remain unrelated limitations.

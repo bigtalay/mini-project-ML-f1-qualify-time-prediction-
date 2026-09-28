@@ -211,6 +211,8 @@ export interface components {
         };
         /** CustomRequest */
         CustomRequest: {
+            /** Event Id */
+            event_id: string;
             FP1?: components["schemas"]["PracticeInput"] | null;
             FP2?: components["schemas"]["PracticeInput"] | null;
             FP3?: components["schemas"]["PracticeInput"] | null;
@@ -286,6 +288,14 @@ export interface components {
             location: string;
             /** Format */
             format: string;
+            /** Circuit Length Km */
+            circuit_length_km: number;
+            /** Corner Count */
+            corner_count: number;
+            /** Layout Id */
+            layout_id: string;
+            /** Source Url */
+            source_url: string;
         };
         /** EventScore */
         EventScore: {
@@ -428,10 +438,6 @@ export interface components {
         PracticeInput: {
             /** Time */
             time: string | number;
-            /** Compound */
-            compound?: string | null;
-            /** Tyre Life */
-            tyre_life?: number | null;
         };
         /** PredictionRow */
         PredictionRow: {
@@ -457,18 +463,10 @@ export interface components {
             upper?: number | null;
             /** Predictable */
             predictable: boolean;
-            /** Fp1 Compound */
-            FP1_Compound?: string | null;
-            /** Fp2 Compound */
-            FP2_Compound?: string | null;
-            /** Fp3 Compound */
-            FP3_Compound?: string | null;
-            /** Fp1 Tyrelife */
-            FP1_TyreLife?: number | null;
-            /** Fp2 Tyrelife */
-            FP2_TyreLife?: number | null;
-            /** Fp3 Tyrelife */
-            FP3_TyreLife?: number | null;
+            /** Circuit Length Km */
+            circuit_length_km: number;
+            /** Corner Count */
+            corner_count: number;
             /** Fp1 Lap Id */
             FP1_lap_id?: string | null;
             /** Fp2 Lap Id */

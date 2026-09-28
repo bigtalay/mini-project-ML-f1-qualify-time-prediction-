@@ -105,7 +105,7 @@ export default function Prediction({
       <aside className="panel scenario">
         <div className="panel-title">
           <span className="section-number">02</span>
-          <h2>เวลา + ยาง</h2>
+          <h2>เวลา + สนาม</h2>
         </div>
         <div className="mode-switch" aria-label="โหมดทำนาย">
           <button
@@ -124,7 +124,7 @@ export default function Prediction({
         </div>
         {manual || selected ? (
           <Scenario
-            key={`${manual ? "manual" : event.event_id + driver}`}
+            key={`${event.event_id}-${manual ? "manual" : driver}`}
             event={event}
             row={manual ? undefined : selected}
           />
@@ -141,10 +141,7 @@ type SessionName = (typeof sessions)[number];
 type FormSession = {
   enabled: boolean;
   time: string;
-  compound: string;
-  tyreLife: string;
 };
-const kinds = ["SOFT", "MEDIUM", "HARD", "INTERMEDIATE", "WET", "UNKNOWN"];
 
 function initialForm(row?: PredictionRow): Record<SessionName, FormSession> {
   return Object.fromEntries(
@@ -153,11 +150,6 @@ function initialForm(row?: PredictionRow): Record<SessionName, FormSession> {
       {
         enabled: row ? row[`${s}_Time`] != null : s === "FP1",
         time: row?.[`${s}_Time`] == null ? "" : String(row[`${s}_Time`]),
-        compound: kinds.includes(row?.[`${s}_Compound`] || "")
-          ? row![`${s}_Compound`]!
-          : "UNKNOWN",
-        tyreLife:
-          row?.[`${s}_TyreLife`] == null ? "" : String(row[`${s}_TyreLife`]),
       },
     ]),
   ) as Record<SessionName, FormSession>;
@@ -170,7 +162,8 @@ function Scenario({ event, row }: { event: Event; row?: PredictionRow }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const serialized = JSON.stringify(values);
-  const eventId = row ? event.event_id : null;
+  const eventId = event.event_id;
+  const historical = !!row;
   const driver = row?.Driver;
   useEffect(() => {
     const fields: Record<SessionName, FormSession> = JSON.parse(serialized);
@@ -189,32 +182,16 @@ function Scenario({ event, row }: { event: Event; row?: PredictionRow }) {
         s,
         {
           time: fields[s].time.trim(),
-          compound: fields[s].compound,
-          tyre_life:
-            fields[s].tyreLife.trim() === ""
-              ? null
-              : Number(fields[s].tyreLife),
         },
       ]),
     );
-    if (
-      enabled.some(
-        (s) =>
-          fields[s].tyreLife.trim() !== "" &&
-          (!Number.isFinite(Number(fields[s].tyreLife)) ||
-            Number(fields[s].tyreLife) < 0),
-      )
-    ) {
-      setError("อายุยางต้องไม่ติดลบ หรือเว้นว่าง");
-      return;
-    }
     setLoading(true);
     const timer = setTimeout(() => {
-      fetch(`${API}/predict${eventId ? "" : "/custom"}`, {
+      fetch(`${API}/predict${historical ? "" : "/custom"}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          eventId ? { event_id: eventId, driver, sessions: payload } : payload,
+          historical ? { event_id: eventId, driver, sessions: payload } : { event_id: eventId, ...payload },
         ),
         signal: controller.signal,
       })
@@ -245,7 +222,7 @@ function Scenario({ event, row }: { event: Event; row?: PredictionRow }) {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [serialized, eventId, driver]);
+  }, [serialized, eventId, driver, historical]);
   function update(s: SessionName, patch: Partial<FormSession>) {
     setValues((previous) => ({
       ...previous,
@@ -260,9 +237,15 @@ function Scenario({ event, row }: { event: Event; row?: PredictionRow }) {
       </div>
       <p>
         {row
-          ? "เวลาและยางเติมจาก lap จริง เปลี่ยนค่าเพื่อทดลอง scenario"
-          : "ไม่ต้องระบุทีม นักขับ หรือสนาม ใช้ข้อมูลซ้อมที่จบก่อน Qualifying เท่านั้น"}
+          ? "เวลาเติมจาก lap จริง เปลี่ยนค่าเพื่อทดลอง scenario"
+          : "เลือกปีและสนามด้านบน แล้วกรอกเฉพาะเวลาซ้อมก่อน Qualifying ไม่ใช้ทีม นักขับ หรือยางเป็น feature"}
       </p>
+      <div className="source-note">
+        <b>{event.name} · {event.year}</b>
+        <p>ความยาวสนาม {event.circuit_length_km.toFixed(3)} km · {event.corner_count} โค้ง</p>
+        <p>ผัง {event.layout_id} — เติมตามสนามและปีที่เลือก ไม่ใช่ค่าที่เดาจากเวลา Q</p>
+        <a href={event.source_url} target="_blank" rel="noreferrer">แหล่งข้อมูลสนาม: F1DB (CC BY 4.0) ↗</a>
+      </div>
       {sessions.map((s) => (
         <fieldset className="tyre-session" key={s}>
           <legend>{s}</legend>
@@ -288,32 +271,7 @@ function Scenario({ event, row }: { event: Event; row?: PredictionRow }) {
                   onChange={(e) => update(s, { time: e.target.value })}
                 />
               </label>
-              <div className="tyre-fields">
-                <label>
-                  ชนิดยาง
-                  <select
-                    aria-label={`${s} ชนิดยาง`}
-                    value={values[s].compound}
-                    onChange={(e) => update(s, { compound: e.target.value })}
-                  >
-                    {kinds.map((k) => (
-                      <option key={k}>{k}</option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  อายุยาง (รอบ)
-                  <input
-                    aria-label={`${s} อายุยาง`}
-                    type="number"
-                    min="0"
-                    step="any"
-                    placeholder="ไม่ทราบ"
-                    value={values[s].tyreLife}
-                    onChange={(e) => update(s, { tyreLife: e.target.value })}
-                  />
-                </label>
-              </div>
+
               {row?.[`${s}_lap_id`] && (
                 <a
                   href={`?year=2023&event=${event.event_id}&view=weekend&drivers=${row.Driver}&session=${s}&lap=${row[`${s}_lap_id`]}`}
@@ -324,7 +282,7 @@ function Scenario({ event, row }: { event: Event; row?: PredictionRow }) {
             </>
           ) : (
             <p className="footnote">
-              ไม่มี session: ใช้ทั้งเวลาและยางจาก Practice
+              ไม่มี session: ใช้เวลาจาก Practice
               ที่เร็วที่สุดที่กรอกไว้
             </p>
           )}
@@ -383,7 +341,7 @@ function Scenario({ event, row }: { event: Event; row?: PredictionRow }) {
         </div>
       )}
       <p className="footnote">
-        เป็นการทดลอง input ไม่ใช่หลักฐานว่าการเปลี่ยนยางจะทำให้รถเร็วขึ้นจริง
+        เป็นการทดลอง input ไม่ใช่หลักฐานว่าการเปลี่ยน input จะทำให้รถเร็วขึ้นจริง
         ไม่มีช่วงรับประกันความแม่นยำสำหรับโมเดลนี้
       </p>
     </div>
@@ -403,7 +361,7 @@ function Evaluation({
     <div className="evaluation">
       <h3>โมเดลผ่านการทดสอบแค่ไหน?</h3>
       <p>
-        เลือก <b>{report.selected_model}</b> ของชุดเวลา+ยาง จาก validation ปี
+        เลือก <b>{report.selected_model}</b> ของชุดเวลา+สนาม จาก validation ปี
         2022 ไม่เลือกใหม่ด้วยคะแนนปี 2023
       </p>
       {active.rmse > baseline.rmse && (

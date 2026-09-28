@@ -10,14 +10,19 @@ from intelligence.final_model import FINAL
 class FinalWebTest(unittest.TestCase):
     def test_saved_model_api_and_analytics(self):
         with TestClient(app) as client:
-            self.assertEqual(client.get('/api/v1/health').json()['model'], 'SVR')
+            self.assertEqual(client.get('/api/v1/health').json()['model'], app.state.bundle['selected'])
+            self.assertEqual(app.state.bundle['features'], ['FP1_Time', 'FP2_Time', 'FP3_Time', 'circuit_length_km', 'corner_count'])
+            circuits = app.state.bundle['circuits']
+            self.assertEqual(circuits.loc['2022-06', 'corner_count'], 16)
+            self.assertEqual(circuits.loc['2023-07', 'corner_count'], 14)
+            self.assertEqual(circuits.loc['2022-17', 'corner_count'], 23)
+            self.assertEqual(circuits.loc['2023-15', 'corner_count'], 19)
             features = app.state.features
             expected = app.state.predictions
             for r in features.loc[features.event_id.eq('2023-12') & features.predictable].itertuples():
-                payload = {s: {'time': getattr(r, s+'_Time'),
-                               'compound': getattr(r, s+'_Compound') if pd.notna(getattr(r, s+'_Compound')) else None,
-                               'tyre_life': getattr(r, s+'_TyreLife') if pd.notna(getattr(r, s+'_TyreLife')) else None}
+                payload = {s: {'time': getattr(r, s+'_Time')}
                            for s in ['FP1', 'FP2', 'FP3'] if pd.notna(getattr(r, s+'_Time'))}
+                payload['event_id'] = r.event_id
                 response = client.post('/api/v1/predict/custom', json=payload)
                 self.assertEqual(response.status_code, 200, response.text)
                 prediction = expected.loc[expected.event_id.eq(r.event_id) & expected.Driver.eq(r.Driver), 'prediction'].iloc[0]
@@ -35,8 +40,10 @@ class FinalWebTest(unittest.TestCase):
             for endpoint in ['/api/v1/evaluation', '/api/v1/quality', '/api/v1/events/2023-12/export?kind=predictions']:
                 self.assertEqual(client.get(endpoint).status_code, 200)
             for payload in [{}, {'FP1': {'time': -1}}, {'FP1': {'time': '1:99'}}, {'FP1': {'time': 90, 'tyre_life': -1}}]:
-                self.assertEqual(client.post('/api/v1/predict/custom', json=payload).status_code, 422)
-            self.assertEqual(client.post('/api/v1/predict/custom', json={'FP1': {'time': '1:30.000', 'compound': 'SOFT'}}).status_code, 200)
+                self.assertEqual(client.post('/api/v1/predict/custom', json={'event_id': '2023-01', **payload}).status_code, 422)
+            self.assertEqual(client.post('/api/v1/predict/custom', json={'event_id': '2023-01', 'FP1': {'time': '1:30.000'}}).status_code, 200)
+            self.assertEqual(client.post('/api/v1/predict/custom', json={'event_id': 'unknown', 'FP1': {'time': 90}}).status_code, 422)
+            self.assertEqual(client.post('/api/v1/predict/custom', json={'event_id': '2023-01', 'FP1': {'time': 90, 'compound': 'SOFT'}}).status_code, 422)
 
 
 if __name__ == '__main__':
