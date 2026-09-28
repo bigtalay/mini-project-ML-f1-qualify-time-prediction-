@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2023-03,FP1,2023-03-31T01:30:00+00:00,2023-03-31T02:30:00+00:00,/static/2023/2023-04-02_Australian_Grand_Prix/2023-03-31_Practice_1/
+2023-03,FP2,2023-03-31T05:00:00+00:00,2023-03-31T06:00:00+00:00,/static/2023/2023-04-02_Australian_Grand_Prix/2023-03-31_Practice_2/
+2023-03,FP3,2023-04-01T01:30:00+00:00,2023-04-01T02:30:00+00:00,/static/2023/2023-04-02_Australian_Grand_Prix/2023-04-01_Practice_3/
+2023-03,Q,2023-04-01T05:00:00+00:00,2023-04-01T06:00:00+00:00,/static/2023/2023-04-02_Australian_Grand_Prix/2023-04-01_Qualifying/

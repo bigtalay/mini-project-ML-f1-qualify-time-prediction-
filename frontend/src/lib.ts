@@ -5,8 +5,9 @@ export type Event = Schema["Event"];
 export type Lap = Schema["Lap"];
 export type Overview = Schema["Overview"];
 export type PredictionRow = Schema["PredictionRow"];
-export const time = (value: number | null | undefined) => {
+export const time = (value: number | null | undefined): string => {
   if (value == null || !Number.isFinite(value)) return "—";
+  if (value < 0) return `−${time(-value)}`;
   const milliseconds = Math.round(value * 1000);
   return `${Math.floor(milliseconds / 60000)}:${((milliseconds % 60000) / 1000).toFixed(3).padStart(6, "0")}`;
 };

@@ -1,0 +1,4 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-04,FP1,2022-04-22T11:30:00+00:00,2022-04-22T12:30:00+00:00,/static/2022/2022-04-24_Emilia_Romagna_Grand_Prix/2022-04-22_Practice_1/
+2022-04,Q,2022-04-22T15:00:00+00:00,2022-04-22T16:00:00+00:00,/static/2022/2022-04-24_Emilia_Romagna_Grand_Prix/2022-04-22_Qualifying/
+2022-04,FP2,2022-04-23T10:30:00+00:00,2022-04-23T11:30:00+00:00,/static/2022/2022-04-24_Emilia_Romagna_Grand_Prix/2022-04-23_Practice_2/

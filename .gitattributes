@@ -1,0 +1,2 @@
+# Keep notebook snapshot checksums identical on Windows/Linux and fresh clones.
+f1_project/data/final/** -text

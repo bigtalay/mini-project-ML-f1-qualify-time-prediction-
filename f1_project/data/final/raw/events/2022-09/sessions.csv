@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-09,FP1,2022-06-17T18:00:00+00:00,2022-06-17T19:00:00+00:00,/static/2022/2022-06-19_Canadian_Grand_Prix/2022-06-17_Practice_1/
+2022-09,FP2,2022-06-17T21:00:00+00:00,2022-06-17T22:00:00+00:00,/static/2022/2022-06-19_Canadian_Grand_Prix/2022-06-17_Practice_2/
+2022-09,FP3,2022-06-18T17:00:00+00:00,2022-06-18T18:00:00+00:00,/static/2022/2022-06-19_Canadian_Grand_Prix/2022-06-18_Practice_3/
+2022-09,Q,2022-06-18T20:00:00+00:00,2022-06-18T21:00:00+00:00,/static/2022/2022-06-19_Canadian_Grand_Prix/2022-06-18_Qualifying/

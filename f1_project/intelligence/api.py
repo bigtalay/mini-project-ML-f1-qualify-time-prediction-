@@ -11,10 +11,10 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from .data import ROOT, Dataset, records
-from .ml import ARTIFACTS, ensure_artifacts, scenario
+from .final_model import load_final, scenario, custom_predict
 
 
 class Event(BaseModel):
@@ -42,8 +42,8 @@ class Result(BaseModel):
 
 class Session(BaseModel):
     session: str
-    start_utc: str
-    end_utc: str
+    start_utc: str | None
+    end_utc: str | None
     before_qualifying: bool
     lap_count: int
     timing_source: str
@@ -116,6 +116,10 @@ class EventScore(ModelScore):
     event_id: str
 
 
+class GroupScore(ModelScore):
+    group: str
+
+
 class Interval(BaseModel):
     percentiles: list[int]
     residual_lower: float
@@ -139,11 +143,14 @@ class Evaluation(BaseModel):
     selection: list[ModelScore]
     test: list[ModelScore]
     per_event: list[EventScore]
-    interval: Interval
+    interval: Interval | None
     partitions: dict[str, Partition]
     selected_features: list[str]
     excluded_test_rows: int
     input_ranges: dict[str, InputRange]
+    groups: list[GroupScore]
+    winners: dict[str, str]
+    raw_features: list[str]
 
 
 class Quality(BaseModel):
@@ -175,6 +182,36 @@ class PredictionRow(BaseModel):
     lower: float | None = None
     upper: float | None = None
     predictable: bool
+    FP1_Compound: str | None = None
+    FP2_Compound: str | None = None
+    FP3_Compound: str | None = None
+    FP1_TyreLife: float | None = None
+    FP2_TyreLife: float | None = None
+    FP3_TyreLife: float | None = None
+    FP1_lap_id: str | None = None
+    FP2_lap_id: str | None = None
+    FP3_lap_id: str | None = None
+
+
+class PracticeInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    time: str | float
+    compound: str | None = None
+    tyre_life: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+
+    @field_validator("time", "tyre_life", mode="before")
+    @classmethod
+    def reject_boolean(cls, value):
+        if isinstance(value, bool):
+            raise ValueError("ใช้ตัวเลข ไม่ใช่ boolean")
+        return value
+
+
+class CustomRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    FP1: PracticeInput | None = None
+    FP2: PracticeInput | None = None
+    FP3: PracticeInput | None = None
 
 
 class ScenarioRequest(BaseModel):
@@ -182,17 +219,22 @@ class ScenarioRequest(BaseModel):
     event_id: str
     driver: str
     overrides: dict[Literal["FP1_Time", "FP2_Time", "FP3_Time"], float] = Field(default_factory=dict)
+    sessions: dict[Literal["FP1", "FP2", "FP3"], PracticeInput] = Field(default_factory=dict)
 
 
-class ScenarioResponse(BaseModel):
+class CustomResponse(BaseModel):
     prediction: float
+    lower: float | None
+    upper: float | None
+    warnings: list[str]
+    inputs: dict[str, float | str | None]
+    model: str
+    imputations: list[str]
+
+
+class ScenarioResponse(CustomResponse):
     baseline: float
     delta: float
-    lower: float
-    upper: float
-    warnings: list[str]
-    inputs: dict[str, float | None]
-    model: str
 
 
 SORTS = Literal["Time", "LapTime", "LapNumber", "Driver", "Sector1Time", "Sector2Time", "Sector3Time", "SpeedST", "TyreLife"]
@@ -200,9 +242,8 @@ SORTS = Literal["Time", "LapTime", "LapNumber", "Driver", "Sector1Time", "Sector
 
 @asynccontextmanager
 async def lifespan(app):
-    app.state.dataset = Dataset()
-    app.state.bundle = ensure_artifacts(app.state.dataset)
-    app.state.predictions = pd.read_csv(ARTIFACTS / "predictions.csv")
+    app.state.dataset, app.state.bundle, app.state.predictions = load_final()
+    app.state.features = app.state.dataset.features
     yield
 
 
@@ -287,7 +328,7 @@ def predictions(event_id: str):
     event = event_or_404(event_id)
     if event["year"] != 2023:
         return []
-    rows = dataset().features.loc[dataset().features.event_id.eq(event_id), ["event_id", "Driver", "QualiTime", "FP1_Time", "FP2_Time", "FP3_Time", "predictable"]]
+    rows = app.state.features.loc[app.state.features.event_id.eq(event_id)].copy()
     selected = app.state.predictions
     selected = selected.loc[selected.event_id.eq(event_id) & selected.model.eq(app.state.bundle["selected"])]
     return records(rows.merge(selected[["event_id", "Driver", "prediction", "error", "lower", "upper"]], on=["event_id", "Driver"], how="left"))
@@ -297,7 +338,16 @@ def predictions(event_id: str):
 def what_if(payload: ScenarioRequest):
     event_or_404(payload.event_id)
     try:
-        return scenario(dataset(), app.state.bundle, payload.event_id, payload.driver, payload.overrides)
+        return scenario(dataset(), app.state.bundle, payload.event_id, payload.driver, payload.overrides,
+                        {s: v.model_dump() for s, v in payload.sessions.items()})
+    except ValueError as exc:
+        raise HTTPException(422, str(exc))
+
+
+@app.post("/api/v1/predict/custom", response_model=CustomResponse)
+def predict_custom(payload: CustomRequest):
+    try:
+        return custom_predict(app.state.bundle, payload.model_dump())
     except ValueError as exc:
         raise HTTPException(422, str(exc))
 

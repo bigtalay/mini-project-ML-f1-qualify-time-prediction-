@@ -8,7 +8,9 @@ x-runtime: &runtime
 services:
   prepare:
     <<: *runtime
-    command: ["python", "-m", "intelligence.prepare"]
+    command: ["python", "-c", "from intelligence.final_model import load_final; load_final(); print('Notebook model ready')"]
+    volumes:
+      - ./f1_project/data/final:/workspace/f1_project/data/final:ro
     restart: "no"
 
   app:
@@ -17,6 +19,9 @@ services:
     depends_on:
       prepare:
         condition: service_completed_successfully
+    volumes:
+      - artifacts:/workspace/f1_project/artifacts
+      - ./f1_project/data/final:/workspace/f1_project/data/final:ro
     ports:
       - "127.0.0.1:8501:8501"
     restart: unless-stopped

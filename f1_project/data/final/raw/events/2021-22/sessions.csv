@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2021-22,FP1,2021-12-10T09:30:00+00:00,2021-12-10T10:30:00+00:00,/static/2021/2021-12-12_Abu_Dhabi_Grand_Prix/2021-12-10_Practice_1/
+2021-22,FP2,2021-12-10T13:00:00+00:00,2021-12-10T14:00:00+00:00,/static/2021/2021-12-12_Abu_Dhabi_Grand_Prix/2021-12-10_Practice_2/
+2021-22,FP3,2021-12-11T10:00:00+00:00,2021-12-11T11:00:00+00:00,/static/2021/2021-12-12_Abu_Dhabi_Grand_Prix/2021-12-11_Practice_3/
+2021-22,Q,2021-12-11T13:00:00+00:00,2021-12-11T14:00:00+00:00,/static/2021/2021-12-12_Abu_Dhabi_Grand_Prix/2021-12-11_Qualifying/

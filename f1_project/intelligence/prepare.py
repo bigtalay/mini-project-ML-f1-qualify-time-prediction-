@@ -3,7 +3,7 @@ import argparse
 import json
 
 from .data import Dataset
-from .ml import ensure_artifacts
+from .tyre_model import ensure_artifacts
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)

@@ -37,11 +37,13 @@ The 51,013 usable laps are available for historical analysis. Only the 48,328 pr
 
 `intelligence.data.Dataset` creates one row per driver/event, minimum valid positive Q1/Q2/Q3 as target and the fastest usable pre-qualifying lap in each Practice. Missing values remain missing. Qualifying weather is available for retrospective display only.
 
-`processed/f1_model_features.csv` is the human-readable snapshot exported by `python data_preparation.py`. It includes source/metadata columns for auditing, but the model explicitly selects only FP1/FP2/FP3 times, Year, Driver, circuit_id and Team. The app derives features from raw/reference tables instead of trusting a stale processed snapshot.
+`processed/f1_model_features.csv` is a legacy snapshot exported by `python data_preparation.py`, not the active model input. The active `intelligence/tyre_model.py` selects the fastest usable pre-qualifying lap, breaking ties by source row; time, compound and tyre life are taken from that exact row. Source row and lap ID are retained per session. The app derives features from immutable raw/reference tables, not a processed snapshot.
 
 The feature table contains 1,320 rows; 16 have no valid target, 5 have no usable pre-qualifying practice. These counts may overlap. Eligibility requires both a valid target and at least one practice time. Missing targets are never imputed.
 
-Imputation, grouped target encoding, scaling and feature selection are learned only inside each training partition; see `intelligence/ml.py`. Artifacts (including lap audit, metrics, predictions and model) are generated outside Git under `artifacts/intelligence/`, or in the Docker artifacts volume.
+The two feature sets contain only the three Practice times, or the three time/compound/tyre-life triples. No identity, year or weather enters the model. Missing sessions copy the fastest available triple in the same row; no available practice means no prediction. Missing/invalid tyre life uses the training-column median, falling back to the pooled training Practice age median if a column is empty. Unknown compounds map to UNKNOWN. One-hot encoding and StandardScaler are fitted only with training data; there is no target encoding or feature selection in this experiment.
+
+Artifacts are generated outside Git under `artifacts/practice-tyres-v1/` (web) and `artifacts/practice-tyres-notebook/` (notebook). `intelligence/ml.py` and `artifacts/intelligence/` retain the older identity-based experiment. 2023 is retrospective evaluation, not an untouched test, because it has already been inspected. The new Notebook's FastF1 demonstration exports separately to ignored `data/downloads/`, never overwriting this snapshot.
 
 ## Maintenance
 

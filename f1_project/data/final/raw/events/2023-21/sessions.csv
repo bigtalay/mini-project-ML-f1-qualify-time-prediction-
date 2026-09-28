@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2023-21,FP1,2023-11-17T04:30:00+00:00,2023-11-17T05:30:00+00:00,/static/2023/2023-11-18_Las_Vegas_Grand_Prix/2023-11-16_Practice_1/
+2023-21,FP2,2023-11-17T10:00:00+00:00,2023-11-17T11:30:00+00:00,/static/2023/2023-11-18_Las_Vegas_Grand_Prix/2023-11-17_Practice_2/
+2023-21,FP3,2023-11-18T04:30:00+00:00,2023-11-18T05:30:00+00:00,/static/2023/2023-11-18_Las_Vegas_Grand_Prix/2023-11-17_Practice_3/
+2023-21,Q,2023-11-18T08:00:00+00:00,2023-11-18T09:00:00+00:00,/static/2023/2023-11-18_Las_Vegas_Grand_Prix/2023-11-18_Qualifying/

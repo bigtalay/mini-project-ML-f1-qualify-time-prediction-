@@ -1,0 +1,4 @@
+event_id,Session,start_utc,end_utc,source_path
+2021-10,FP1,2021-07-16T13:30:00+00:00,2021-07-16T14:30:00+00:00,/static/2021/2021-07-18_British_Grand_Prix/2021-07-16_Practice_1/
+2021-10,Q,2021-07-16T17:00:00+00:00,2021-07-16T18:00:00+00:00,/static/2021/2021-07-18_British_Grand_Prix/2021-07-16_Qualifying/
+2021-10,FP2,2021-07-17T11:00:00+00:00,2021-07-17T12:00:00+00:00,/static/2021/2021-07-18_British_Grand_Prix/2021-07-17_Practice_2/

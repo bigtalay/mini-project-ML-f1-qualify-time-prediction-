@@ -1,0 +1,4 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-21,FP1,2022-11-11T15:30:00+00:00,2022-11-11T16:30:00+00:00,/static/2022/2022-11-13_São_Paulo_Grand_Prix/2022-11-11_Practice_1/
+2022-21,Q,2022-11-11T19:00:00+00:00,2022-11-11T20:00:00+00:00,/static/2022/2022-11-13_São_Paulo_Grand_Prix/2022-11-11_Qualifying/
+2022-21,FP2,2022-11-12T15:30:00+00:00,2022-11-12T16:30:00+00:00,/static/2022/2022-11-13_São_Paulo_Grand_Prix/2022-11-12_Practice_2/

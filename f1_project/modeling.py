@@ -3,7 +3,7 @@ import argparse
 from pathlib import Path
 
 from intelligence.data import Dataset
-from intelligence.ml import ARTIFACTS, ensure_artifacts
+from intelligence.tyre_model import ARTIFACTS, ensure_artifacts
 
 
 def train_models(artifact_dir=ARTIFACTS, force=False):

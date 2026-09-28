@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-13,FP1,2022-07-29T12:00:00+00:00,2022-07-29T13:00:00+00:00,/static/2022/2022-07-31_Hungarian_Grand_Prix/2022-07-29_Practice_1/
+2022-13,FP2,2022-07-29T15:00:00+00:00,2022-07-29T16:00:00+00:00,/static/2022/2022-07-31_Hungarian_Grand_Prix/2022-07-29_Practice_2/
+2022-13,FP3,2022-07-30T11:00:00+00:00,2022-07-30T12:00:00+00:00,/static/2022/2022-07-31_Hungarian_Grand_Prix/2022-07-30_Practice_3/
+2022-13,Q,2022-07-30T14:00:00+00:00,2022-07-30T15:00:00+00:00,/static/2022/2022-07-31_Hungarian_Grand_Prix/2022-07-30_Qualifying/

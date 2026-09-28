@@ -113,6 +113,8 @@ small {
   color: var(--warm);
 }
 .skip {
+  opacity: 0;
+  pointer-events: none;
   position: fixed;
   left: 12px;
   top: -60px;
@@ -122,6 +124,8 @@ small {
   z-index: 9;
 }
 .skip:focus {
+  opacity: 1;
+  pointer-events: auto;
   top: 10px;
 }
 .masthead {
@@ -1398,6 +1402,61 @@ footer {
 }
 .rank-time.best {
   color: var(--purple);
+}
+.mode-switch {
+  display: flex;
+  gap: 8px;
+  padding: 14px 18px 0;
+}
+.mode-switch button[aria-pressed="true"] {
+  border-color: var(--purple);
+  color: var(--purple);
+}
+.tyre-session {
+  min-width: 0;
+  border: 1px solid #39404a;
+  margin: 18px 0;
+  padding: 12px;
+}
+.tyre-session legend {
+  padding: 0 6px;
+  font-family: "IBM Plex Mono";
+}
+.session-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.session-toggle input {
+  width: auto;
+}
+.tyre-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.tyre-fields label {
+  min-width: 0;
+  font-size: 12px;
+}
+.tyre-fields input,
+.tyre-fields select,
+.tyre-session .scenario-input input {
+  width: 100%;
+  min-width: 0;
+}
+.scenario-output dl {
+  font-size: 12px;
+}
+.scenario-output dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.scenario-output dd {
+  margin: 0;
 }
 .driver-legend i {
   height: auto;

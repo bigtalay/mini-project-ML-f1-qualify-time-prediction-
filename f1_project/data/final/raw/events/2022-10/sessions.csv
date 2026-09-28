@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-10,FP1,2022-07-01T12:00:00+00:00,2022-07-01T13:00:00+00:00,/static/2022/2022-07-03_British_Grand_Prix/2022-07-01_Practice_1/
+2022-10,FP2,2022-07-01T15:00:00+00:00,2022-07-01T16:00:00+00:00,/static/2022/2022-07-03_British_Grand_Prix/2022-07-01_Practice_2/
+2022-10,FP3,2022-07-02T11:00:00+00:00,2022-07-02T12:00:00+00:00,/static/2022/2022-07-03_British_Grand_Prix/2022-07-02_Practice_3/
+2022-10,Q,2022-07-02T14:00:00+00:00,2022-07-02T15:00:00+00:00,/static/2022/2022-07-03_British_Grand_Prix/2022-07-02_Qualifying/

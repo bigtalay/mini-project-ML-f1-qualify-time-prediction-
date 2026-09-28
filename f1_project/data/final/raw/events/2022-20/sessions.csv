@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-20,FP1,2022-10-28T18:00:00+00:00,2022-10-28T19:00:00+00:00,/static/2022/2022-10-30_Mexico_City_Grand_Prix/2022-10-28_Practice_1/
+2022-20,FP2,2022-10-28T21:00:00+00:00,2022-10-28T22:30:00+00:00,/static/2022/2022-10-30_Mexico_City_Grand_Prix/2022-10-28_Practice_2/
+2022-20,FP3,2022-10-29T17:00:00+00:00,2022-10-29T18:00:00+00:00,/static/2022/2022-10-30_Mexico_City_Grand_Prix/2022-10-29_Practice_3/
+2022-20,Q,2022-10-29T20:00:00+00:00,2022-10-29T21:00:00+00:00,/static/2022/2022-10-30_Mexico_City_Grand_Prix/2022-10-29_Qualifying/

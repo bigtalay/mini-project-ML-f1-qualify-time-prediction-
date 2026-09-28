@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2023-07,FP1,2023-06-02T11:30:00+00:00,2023-06-02T12:30:00+00:00,/static/2023/2023-06-04_Spanish_Grand_Prix/2023-06-02_Practice_1/
+2023-07,FP2,2023-06-02T15:00:00+00:00,2023-06-02T16:00:00+00:00,/static/2023/2023-06-04_Spanish_Grand_Prix/2023-06-02_Practice_2/
+2023-07,FP3,2023-06-03T10:30:00+00:00,2023-06-03T11:30:00+00:00,/static/2023/2023-06-04_Spanish_Grand_Prix/2023-06-03_Practice_3/
+2023-07,Q,2023-06-03T14:00:00+00:00,2023-06-03T15:00:00+00:00,/static/2023/2023-06-04_Spanish_Grand_Prix/2023-06-03_Qualifying/

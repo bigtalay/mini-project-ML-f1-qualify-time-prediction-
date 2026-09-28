@@ -33,7 +33,8 @@ export default function Method({
           </label>
         </div>
         <p className="panel-caption">
-          จากแถวต้นทางถึง input ของโมเดล ทุกขั้นตอนใช้ฟังก์ชันเดียวกับ Notebook
+          จากแถวต้นทางถึง input ของโมเดล ใช้กฎเดียวกับ Notebook
+          และตรวจเทียบผลทั้งสองทาง
         </p>
         <Status {...quality} />
         {quality.data && (
@@ -74,8 +75,9 @@ export default function Method({
                 <span>04 / FEATURES</span>
                 <h3>{fmtInt(quality.data.feature_rows)} driver / event rows</h3>
                 <p>
-                  ใช้เวลาเร็วที่สุดของแต่ละ Practice · target = min(Q1,Q2,Q3)
-                  ที่เป็นบวก
+                  ใช้เวลา ชนิดยาง และอายุยางจาก lap
+                  เร็วที่สุดแถวเดียวกันของแต่ละ Practice · target =
+                  min(Q1,Q2,Q3) ที่เป็นบวก
                 </p>
                 <p>
                   ไม่มี target {quality.data.missing_targets} แถว · ไม่มี
@@ -125,7 +127,7 @@ export default function Method({
                   <code>{hash}</code>
                 </p>
               ))}
-              SHA-256 หลัง normalize CRLF → LF
+              SHA-256 ของ raw ที่ใช้ฝึกใน final.ipynb
             </div>
           </>
         )}
@@ -138,8 +140,8 @@ export default function Method({
         <div className="prose">
           <h3>Raw ในงานนี้หมายถึงอะไร</h3>
           <p>
-            ข้อมูลระดับ result, lap และ weather timestamp ที่ส่งออกจาก FastF1
-            โดยเลือกคอลัมน์และแปลงเวลาเป็นวินาทีแล้ว FastF1
+            ข้อมูลระดับ result และ lap ที่ส่งออกจาก FastF1
+            เก็บ raw ก่อน cleaning และแปลงหน่วยในขั้นวิเคราะห์ ไม่มี weather ในชุดนี้ FastF1
             เองมีการประมวลผลแหล่งข้อมูล จึงไม่ใช่ raw feed ทั้งหมดจากระบบจับเวลา
           </p>
           <h3>ข้อมูลที่ใช้ก่อนทำนาย</h3>
@@ -149,25 +151,27 @@ export default function Method({
             ที่แหล่งข้อมูลรายงาน ไม่ใช่การวัดเวลาจบจริงใหม่ของเรา
           </p>
           <p>
-            ไม่ใช้ weather ระหว่าง Qualifying, Q1/Q2/Q3 หรือ Position เป็น
+            ไม่ใช้ชื่อทีม นักขับ สนาม ปี weather, Q1/Q2/Q3 หรือ Position เป็น
             feature
           </p>
           <h3>การเตรียม input</h3>
           <p>
-            Median imputation → event-grouped target encoding สำหรับ Driver
-            และสนาม → one-hot Team → scaling → เลือกสูงสุด 15 features ทุกขั้น
-            fit บน training partition เท่านั้น Unknown category ใช้ fallback จาก
-            training
+            ใช้เวลา+ชนิดยาง+อายุยาง 9 คอลัมน์จาก final.ipynb
+            session หายจะคัดลอกทั้ง triple จาก Practice
+            ที่เร็วที่สุดที่มีในแถวนั้น อายุยางขาดใช้ median ของชุดฝึก
+            (คอลัมน์ว่างใช้ median รวมของ Practice ในชุดฝึก) ชนิดยางไม่ทราบเป็น
+            UNKNOWN แล้ว One-hot Encoding; ตัวเลขใช้ StandardScaler ไม่ใช้
+            Target Encoding, PCA หรือ feature selection และ fit preprocessing
+            เฉพาะชุดฝึก
           </p>
-          <h3>สี่ส่วนที่แยกจากกัน</h3>
+          <h3>แบ่งข้อมูลตามปี</h3>
           <Status {...evaluation} />
           {evaluation.data && (
             <ol className="split-list">
               {[
                 ["training", "2021 / ฝึกเบื้องต้น"],
-                ["selection", "2022 รอบ 1–11 / เลือกโมเดล"],
-                ["calibration", "2022 รอบ 12–22 / วัดช่วง error"],
-                ["test", "2023 / ทดสอบสุดท้าย"],
+                ["selection", "2022 ทั้งปี / เลือกโมเดลและปรับพารามิเตอร์"],
+                ["test", "2023 / ประเมินย้อนหลัง (เคยวิเคราะห์แล้ว)"],
               ].map(([k, label]) => (
                 <li key={k}>
                   <b>{label}</b>
@@ -180,8 +184,13 @@ export default function Method({
             </ol>
           )}
           <p>
-            หลังเลือกโมเดล ฝึกใหม่ด้วย 2021 + ชุด selection เท่านั้น ไม่ใช้
-            calibration หรือ test มาปรับโมเดล
+            หลังเลือกโมเดล ฝึกใหม่ด้วยปี 2021–2022 ไม่ใช้ปี 2023 มาปรับโมเดล
+          </p>
+          <p>
+            ทดลอง Linear Regression, Random Forest, Gradient Boosting และ SVR
+            ปรับพารามิเตอร์ด้วย ParameterGrid เลือกจาก validation RMSE
+            เว็บโหลด qualifying.joblib ที่ Notebook บันทึก ไม่ฝึกซ้ำตอนเปิด
+            และแสดงผลเทียบ baseline ตามจริง
           </p>
           <h3>สิ่งที่กราฟยังตอบไม่ได้</h3>
           <p>

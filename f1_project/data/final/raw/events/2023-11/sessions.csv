@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2023-11,FP1,2023-07-21T11:30:00+00:00,2023-07-21T12:30:00+00:00,/static/2023/2023-07-23_Hungarian_Grand_Prix/2023-07-21_Practice_1/
+2023-11,FP2,2023-07-21T15:00:00+00:00,2023-07-21T16:00:00+00:00,/static/2023/2023-07-23_Hungarian_Grand_Prix/2023-07-21_Practice_2/
+2023-11,FP3,2023-07-22T10:30:00+00:00,2023-07-22T11:30:00+00:00,/static/2023/2023-07-23_Hungarian_Grand_Prix/2023-07-22_Practice_3/
+2023-11,Q,2023-07-22T14:00:00+00:00,2023-07-22T15:00:00+00:00,/static/2023/2023-07-23_Hungarian_Grand_Prix/2023-07-22_Qualifying/

@@ -60,8 +60,11 @@ test("what-if uses the selected event, shows limitations and validates inputs", 
   await input.fill(String(Number(original) + 1));
   await expect(page.getByTestId("scenario-result")).toBeVisible();
   await expect(
-    page.getByText(/โมเดลที่เลือกมี RMSE สูงกว่า Practice baseline/),
+    page.getByText(/ปี 2023 เคยใช้วิเคราะห์ปัญหาแล้ว/),
   ).toBeVisible();
+  await expect(page.getByLabel("FP2 ชนิดยาง")).toHaveValue("SOFT");
+  await page.getByLabel("FP2 อายุยาง").fill("12");
+  await expect(page.getByTestId("scenario-result")).toBeVisible();
   await input.fill("-1");
   await expect(page.getByRole("alert")).toContainText(
     "เวลา Practice ต้องมากกว่า 0",
@@ -76,8 +79,68 @@ test("what-if uses the selected event, shows limitations and validates inputs", 
   await page.getByLabel("Season", { exact: true }).selectOption("2021");
   await expect(page.getByText(/ปี 2021 ใช้ฝึกหรือเลือกโมเดล/)).toBeVisible();
   await expect(
-    page.getByLabel("What-if FP2_Time", { exact: true }),
-  ).toHaveCount(0);
+    page.getByRole("button", { name: "กรอกเอง", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+});
+
+test("manual tyres, missing sessions, API parity, source lap and export", async ({
+  page,
+}, info) => {
+  await page.goto("/?year=2023&event=2023-01&view=prediction&mode=manual");
+  await page.getByLabel("What-if FP1_Time", { exact: true }).fill("1:30.000");
+  await page.getByLabel("FP1 ชนิดยาง").selectOption("SOFT");
+  await page.getByLabel("FP1 อายุยาง").fill("3");
+  const result = page.getByTestId("scenario-result");
+  await expect(result).toContainText("FP2: เติมเวลาและยางจาก FP1");
+  const response = await page.request.post("/api/v1/predict/custom", {
+    data: { FP1: { time: "1:30.000", compound: "SOFT", tyre_life: 3 } },
+  });
+  const body = await response.json();
+  const milliseconds = Math.round(body.prediction * 1000);
+  const formatted = `${Math.floor(milliseconds / 60000)}:${((milliseconds % 60000) / 1000).toFixed(3).padStart(6, "0")}`;
+  await expect(result.locator("strong")).toHaveText(formatted);
+  await page.getByLabel("FP1 อายุยาง").fill("-1");
+  await expect(page.getByRole("alert")).toContainText("อายุยางต้องไม่ติดลบ");
+  await expect(result).toHaveCount(0);
+  await page.getByLabel("FP1 อายุยาง").fill("");
+  await expect(result).toContainText("median ชุดฝึก");
+  await page.getByLabel("มีข้อมูล FP1", { exact: true }).uncheck();
+  await expect(page.getByRole("alert")).toContainText("ไม่มี Practice");
+  await page.getByLabel("มีข้อมูล FP2", { exact: true }).check();
+  await page.getByLabel("What-if FP2_Time", { exact: true }).fill("1:99");
+  await expect(page.getByRole("alert")).toContainText("รูปแบบเวลาต้องเป็น");
+  await page.getByLabel("What-if FP2_Time", { exact: true }).fill("200");
+  await expect(result).toContainText("อยู่นอกช่วงข้อมูลฝึก");
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth + 1,
+    ),
+  ).toBe(true);
+  await page.screenshot({
+    path: info.outputPath("manual-tyres.png"),
+    fullPage: true,
+  });
+  await page.reload();
+  await expect(
+    page.getByRole("button", { name: "กรอกเอง", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "ใช้ข้อมูลย้อนหลัง" }).click();
+  await expect(result).toBeVisible();
+  const link = page.getByRole("link", { name: "ดู lap ต้นทาง FP2 ↗" });
+  const href = await link.getAttribute("href");
+  await link.click();
+  await expect(page.getByTestId("lap-inspection")).toContainText(
+    new URLSearchParams(href!).get("lap")!,
+  );
+  await page.goBack();
+  const downloadPromise = page.waitForEvent("download");
+  await page
+    .getByRole("link", { name: "↓ CSV", exact: true })
+    .click();
+  const downloaded = await downloadPromise;
+  const csv = await fs.readFile((await downloaded.path())!, "utf8");
+  expect(csv).toContain("FP2_Compound");
+  expect(csv).toContain("FP2_lap_id");
 });
 
 test("sprint, rain, missing data and audit are explicit", async ({
@@ -93,12 +156,12 @@ test("sprint, rain, missing data and audit are explicit", async ({
       exact: true,
     })
     .click();
-  await expect(
-    page.getByText("79,661 practice laps", { exact: true }),
-  ).toBeVisible();
+  const quality = await (await page.request.get('/api/v1/quality')).json();
+  const lapCount = `${Number(quality.raw_laps).toLocaleString('en-US')} practice laps`;
+  await expect(page.getByText(lapCount, { exact: true })).toBeVisible();
   await page.getByLabel("ขอบเขตรายงานข้อมูล").selectOption("event");
   await expect(
-    page.getByText("79,661 practice laps", { exact: true }),
+    page.getByText(lapCount, { exact: true }),
   ).toHaveCount(0);
   await page.screenshot({
     path: info.outputPath("method.png"),
@@ -109,7 +172,7 @@ test("sprint, rain, missing data and audit are explicit", async ({
     page.getByText(/ไม่มี lap ที่ผ่านการตรวจในตัวกรองนี้/),
   ).toBeVisible();
   await page.goto("/?year=2021&event=2021-12");
-  await expect(page.locator(".weather-note strong")).toHaveText("พบฝน");
+  await expect(page.locator(".weather-note strong")).toHaveText("ไม่มีข้อมูล");
 });
 
 test("read API failure can be retried and layout does not overflow", async ({

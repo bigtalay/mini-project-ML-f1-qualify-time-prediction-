@@ -157,6 +157,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/predict/custom": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Predict Custom */
+        post: operations["predict_custom_api_v1_predict_custom_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/events/{event_id}/export": {
         parameters: {
             query?: never;
@@ -192,6 +209,31 @@ export interface components {
             enough_laps: boolean;
             best_lap: components["schemas"]["Lap"] | null;
         };
+        /** CustomRequest */
+        CustomRequest: {
+            FP1?: components["schemas"]["PracticeInput"] | null;
+            FP2?: components["schemas"]["PracticeInput"] | null;
+            FP3?: components["schemas"]["PracticeInput"] | null;
+        };
+        /** CustomResponse */
+        CustomResponse: {
+            /** Prediction */
+            prediction: number;
+            /** Lower */
+            lower: number | null;
+            /** Upper */
+            upper: number | null;
+            /** Warnings */
+            warnings: string[];
+            /** Inputs */
+            inputs: {
+                [key: string]: number | string | null;
+            };
+            /** Model */
+            model: string;
+            /** Imputations */
+            imputations: string[];
+        };
         /** Evaluation */
         Evaluation: {
             /** Selected Model */
@@ -202,7 +244,7 @@ export interface components {
             test: components["schemas"]["ModelScore"][];
             /** Per Event */
             per_event: components["schemas"]["EventScore"][];
-            interval: components["schemas"]["Interval"];
+            interval: components["schemas"]["Interval"] | null;
             /** Partitions */
             partitions: {
                 [key: string]: components["schemas"]["Partition"];
@@ -215,6 +257,14 @@ export interface components {
             input_ranges: {
                 [key: string]: components["schemas"]["InputRange"];
             };
+            /** Groups */
+            groups: components["schemas"]["GroupScore"][];
+            /** Winners */
+            winners: {
+                [key: string]: string;
+            };
+            /** Raw Features */
+            raw_features: string[];
         };
         /** Event */
         Event: {
@@ -249,6 +299,19 @@ export interface components {
             rmse: number;
             /** Event Id */
             event_id: string;
+        };
+        /** GroupScore */
+        GroupScore: {
+            /** Model */
+            model: string;
+            /** Count */
+            count: number;
+            /** Mae */
+            mae: number;
+            /** Rmse */
+            rmse: number;
+            /** Group */
+            group: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -361,6 +424,15 @@ export interface components {
             /** Events */
             events: string[];
         };
+        /** PracticeInput */
+        PracticeInput: {
+            /** Time */
+            time: string | number;
+            /** Compound */
+            compound?: string | null;
+            /** Tyre Life */
+            tyre_life?: number | null;
+        };
         /** PredictionRow */
         PredictionRow: {
             /** Event Id */
@@ -385,6 +457,24 @@ export interface components {
             upper?: number | null;
             /** Predictable */
             predictable: boolean;
+            /** Fp1 Compound */
+            FP1_Compound?: string | null;
+            /** Fp2 Compound */
+            FP2_Compound?: string | null;
+            /** Fp3 Compound */
+            FP3_Compound?: string | null;
+            /** Fp1 Tyrelife */
+            FP1_TyreLife?: number | null;
+            /** Fp2 Tyrelife */
+            FP2_TyreLife?: number | null;
+            /** Fp3 Tyrelife */
+            FP3_TyreLife?: number | null;
+            /** Fp1 Lap Id */
+            FP1_lap_id?: string | null;
+            /** Fp2 Lap Id */
+            FP2_lap_id?: string | null;
+            /** Fp3 Lap Id */
+            FP3_lap_id?: string | null;
         };
         /** Quality */
         Quality: {
@@ -454,36 +544,42 @@ export interface components {
             overrides?: {
                 [key: string]: number;
             };
+            /** Sessions */
+            sessions?: {
+                [key: string]: components["schemas"]["PracticeInput"];
+            };
         };
         /** ScenarioResponse */
         ScenarioResponse: {
             /** Prediction */
             prediction: number;
-            /** Baseline */
-            baseline: number;
-            /** Delta */
-            delta: number;
             /** Lower */
-            lower: number;
+            lower: number | null;
             /** Upper */
-            upper: number;
+            upper: number | null;
             /** Warnings */
             warnings: string[];
             /** Inputs */
             inputs: {
-                [key: string]: number | null;
+                [key: string]: number | string | null;
             };
             /** Model */
             model: string;
+            /** Imputations */
+            imputations: string[];
+            /** Baseline */
+            baseline: number;
+            /** Delta */
+            delta: number;
         };
         /** Session */
         Session: {
             /** Session */
             session: string;
             /** Start Utc */
-            start_utc: string;
+            start_utc: string | null;
             /** End Utc */
-            end_utc: string;
+            end_utc: string | null;
             /** Before Qualifying */
             before_qualifying: boolean;
             /** Lap Count */
@@ -776,6 +872,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ScenarioResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    predict_custom_api_v1_predict_custom_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CustomRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomResponse"];
                 };
             };
             /** @description Validation Error */

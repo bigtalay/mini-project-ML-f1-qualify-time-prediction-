@@ -486,6 +486,44 @@
         }
       }
     },
+    "/api/v1/predict/custom": {
+      "post": {
+        "summary": "Predict Custom",
+        "operationId": "predict_custom_api_v1_predict_custom_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/events/{event_id}/export": {
       "get": {
         "summary": "Export",
@@ -715,6 +753,119 @@
         ],
         "title": "Comparison"
       },
+      "CustomRequest": {
+        "properties": {
+          "FP1": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PracticeInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "FP2": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PracticeInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "FP3": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PracticeInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "CustomRequest"
+      },
+      "CustomResponse": {
+        "properties": {
+          "prediction": {
+            "type": "number",
+            "title": "Prediction"
+          },
+          "lower": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lower"
+          },
+          "upper": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upper"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "inputs": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Inputs"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "imputations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Imputations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prediction",
+          "lower",
+          "upper",
+          "warnings",
+          "inputs",
+          "model",
+          "imputations"
+        ],
+        "title": "CustomResponse"
+      },
       "Evaluation": {
         "properties": {
           "selected_model": {
@@ -743,7 +894,14 @@
             "title": "Per Event"
           },
           "interval": {
-            "$ref": "#/components/schemas/Interval"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Interval"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "partitions": {
             "additionalProperties": {
@@ -769,6 +927,27 @@
             },
             "type": "object",
             "title": "Input Ranges"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/GroupScore"
+            },
+            "type": "array",
+            "title": "Groups"
+          },
+          "winners": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Winners"
+          },
+          "raw_features": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Raw Features"
           }
         },
         "type": "object",
@@ -781,7 +960,10 @@
           "partitions",
           "selected_features",
           "excluded_test_rows",
-          "input_ranges"
+          "input_ranges",
+          "groups",
+          "winners",
+          "raw_features"
         ],
         "title": "Evaluation"
       },
@@ -870,6 +1052,39 @@
           "event_id"
         ],
         "title": "EventScore"
+      },
+      "GroupScore": {
+        "properties": {
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "mae": {
+            "type": "number",
+            "title": "Mae"
+          },
+          "rmse": {
+            "type": "number",
+            "title": "Rmse"
+          },
+          "group": {
+            "type": "string",
+            "title": "Group"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model",
+          "count",
+          "mae",
+          "rmse",
+          "group"
+        ],
+        "title": "GroupScore"
       },
       "HTTPValidationError": {
         "properties": {
@@ -1262,6 +1477,50 @@
         ],
         "title": "Partition"
       },
+      "PracticeInput": {
+        "properties": {
+          "time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "title": "Time"
+          },
+          "compound": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Compound"
+          },
+          "tyre_life": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tyre Life"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "time"
+        ],
+        "title": "PracticeInput"
+      },
       "PredictionRow": {
         "properties": {
           "event_id": {
@@ -1363,6 +1622,105 @@
           "predictable": {
             "type": "boolean",
             "title": "Predictable"
+          },
+          "FP1_Compound": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp1 Compound"
+          },
+          "FP2_Compound": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp2 Compound"
+          },
+          "FP3_Compound": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp3 Compound"
+          },
+          "FP1_TyreLife": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp1 Tyrelife"
+          },
+          "FP2_TyreLife": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp2 Tyrelife"
+          },
+          "FP3_TyreLife": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp3 Tyrelife"
+          },
+          "FP1_lap_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp1 Lap Id"
+          },
+          "FP2_lap_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp2 Lap Id"
+          },
+          "FP3_lap_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp3 Lap Id"
           }
         },
         "type": "object",
@@ -1570,6 +1928,20 @@
             },
             "type": "object",
             "title": "Overrides"
+          },
+          "sessions": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/PracticeInput"
+            },
+            "propertyNames": {
+              "enum": [
+                "FP1",
+                "FP2",
+                "FP3"
+              ]
+            },
+            "type": "object",
+            "title": "Sessions"
           }
         },
         "additionalProperties": false,
@@ -1586,20 +1958,26 @@
             "type": "number",
             "title": "Prediction"
           },
-          "baseline": {
-            "type": "number",
-            "title": "Baseline"
-          },
-          "delta": {
-            "type": "number",
-            "title": "Delta"
-          },
           "lower": {
-            "type": "number",
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Lower"
           },
           "upper": {
-            "type": "number",
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Upper"
           },
           "warnings": {
@@ -1616,6 +1994,9 @@
                   "type": "number"
                 },
                 {
+                  "type": "string"
+                },
+                {
                   "type": "null"
                 }
               ]
@@ -1626,18 +2007,34 @@
           "model": {
             "type": "string",
             "title": "Model"
+          },
+          "imputations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Imputations"
+          },
+          "baseline": {
+            "type": "number",
+            "title": "Baseline"
+          },
+          "delta": {
+            "type": "number",
+            "title": "Delta"
           }
         },
         "type": "object",
         "required": [
           "prediction",
-          "baseline",
-          "delta",
           "lower",
           "upper",
           "warnings",
           "inputs",
-          "model"
+          "model",
+          "imputations",
+          "baseline",
+          "delta"
         ],
         "title": "ScenarioResponse"
       },
@@ -1648,11 +2045,25 @@
             "title": "Session"
           },
           "start_utc": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Start Utc"
           },
           "end_utc": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "End Utc"
           },
           "before_qualifying": {

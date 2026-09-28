@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-19,FP1,2022-10-21T19:00:00+00:00,2022-10-21T20:00:00+00:00,/static/2022/2022-10-23_United_States_Grand_Prix/2022-10-21_Practice_1/
+2022-19,FP2,2022-10-21T22:00:00+00:00,2022-10-21T23:30:00+00:00,/static/2022/2022-10-23_United_States_Grand_Prix/2022-10-21_Practice_2/
+2022-19,FP3,2022-10-22T19:00:00+00:00,2022-10-22T20:00:00+00:00,/static/2022/2022-10-23_United_States_Grand_Prix/2022-10-22_Practice_3/
+2022-19,Q,2022-10-22T22:00:00+00:00,2022-10-22T23:00:00+00:00,/static/2022/2022-10-23_United_States_Grand_Prix/2022-10-22_Qualifying/
