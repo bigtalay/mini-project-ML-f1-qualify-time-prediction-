@@ -10,8 +10,26 @@ f1_cache/
 
 # 4. ไฟล์ระบบของ Python และ Jupyter Notebook (ซ่อนไว้ไม่ให้รก)
 .ipynb_checkpoints/
+.Trash-*/
 __pycache__/
 *.pyc
 
 
-*.csv
+f1_project/artifacts/
+f1_project/data/downloads/
+AGENTS.md
+frontend/node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+*.tsbuildinfo
+
+# Local verification output and abandoned download years (keep on disk).
+.playwright-cli/
+output/
+tmp/
+f1_project/data/final/raw/events/2018-*/
+f1_project/data/final/raw/events/2019-*/
+f1_project/data/final/raw/events/2020-*/
+f1_project/data/final/raw/events/2024-*/
+f1_project/data/final/raw/events/2025-*/

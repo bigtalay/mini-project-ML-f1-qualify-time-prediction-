@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2023-22,FP1,2023-11-24T09:30:00+00:00,2023-11-24T10:30:00+00:00,/static/2023/2023-11-26_Abu_Dhabi_Grand_Prix/2023-11-24_Practice_1/
+2023-22,FP2,2023-11-24T13:00:00+00:00,2023-11-24T14:00:00+00:00,/static/2023/2023-11-26_Abu_Dhabi_Grand_Prix/2023-11-24_Practice_2/
+2023-22,FP3,2023-11-25T10:30:00+00:00,2023-11-25T11:30:00+00:00,/static/2023/2023-11-26_Abu_Dhabi_Grand_Prix/2023-11-25_Practice_3/
+2023-22,Q,2023-11-25T14:00:00+00:00,2023-11-25T15:00:00+00:00,/static/2023/2023-11-26_Abu_Dhabi_Grand_Prix/2023-11-25_Qualifying/

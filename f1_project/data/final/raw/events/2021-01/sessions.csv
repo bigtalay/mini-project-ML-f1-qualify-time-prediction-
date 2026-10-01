@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2021-01,FP1,2021-03-26T11:30:00+00:00,2021-03-26T12:30:00+00:00,/static/2021/2021-03-28_Bahrain_Grand_Prix/2021-03-26_Practice_1/
+2021-01,FP2,2021-03-26T15:00:00+00:00,2021-03-26T16:00:00+00:00,/static/2021/2021-03-28_Bahrain_Grand_Prix/2021-03-26_Practice_2/
+2021-01,FP3,2021-03-27T12:00:00+00:00,2021-03-27T13:00:00+00:00,/static/2021/2021-03-28_Bahrain_Grand_Prix/2021-03-27_Practice_3/
+2021-01,Q,2021-03-27T15:00:00+00:00,2021-03-27T16:00:00+00:00,/static/2021/2021-03-28_Bahrain_Grand_Prix/2021-03-27_Qualifying/

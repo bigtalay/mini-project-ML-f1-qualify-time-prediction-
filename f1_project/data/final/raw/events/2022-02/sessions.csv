@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-02,FP1,2022-03-25T14:00:00+00:00,2022-03-25T15:00:00+00:00,/static/2022/2022-03-27_Saudi_Arabian_Grand_Prix/2022-03-25_Practice_1/
+2022-02,FP2,2022-03-25T17:00:00+00:00,2022-03-25T18:00:00+00:00,/static/2022/2022-03-27_Saudi_Arabian_Grand_Prix/2022-03-25_Practice_2/
+2022-02,FP3,2022-03-26T14:00:00+00:00,2022-03-26T15:00:00+00:00,/static/2022/2022-03-27_Saudi_Arabian_Grand_Prix/2022-03-26_Practice_3/
+2022-02,Q,2022-03-26T17:00:00+00:00,2022-03-26T18:00:00+00:00,/static/2022/2022-03-27_Saudi_Arabian_Grand_Prix/2022-03-26_Qualifying/

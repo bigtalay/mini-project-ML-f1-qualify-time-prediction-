@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path,status,reason
+2021-15,FP1,2021-09-24T08:30:00+00:00,2021-09-24T09:30:00+00:00,/static/2021/2021-09-26_Russian_Grand_Prix/2021-09-24_Practice_1/,,
+2021-15,FP2,2021-09-24T12:00:00+00:00,2021-09-24T13:00:00+00:00,/static/2021/2021-09-26_Russian_Grand_Prix/2021-09-24_Practice_2/,,
+2021-15,FP3,,,https://www.fia.com/news/f1-norris-takes-first-f1-pole-position-russia-ahead-sainz-and-russell,cancelled,Heavy rain
+2021-15,Q,2021-09-25T12:00:00+00:00,2021-09-25T13:00:00+00:00,/static/2021/2021-09-26_Russian_Grand_Prix/2021-09-25_Qualifying/,,

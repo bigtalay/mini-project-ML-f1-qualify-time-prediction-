@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-03,FP1,2022-04-08T03:00:00+00:00,2022-04-08T04:00:00+00:00,/static/2022/2022-04-10_Australian_Grand_Prix/2022-04-08_Practice_1/
+2022-03,FP2,2022-04-08T06:00:00+00:00,2022-04-08T07:00:00+00:00,/static/2022/2022-04-10_Australian_Grand_Prix/2022-04-08_Practice_2/
+2022-03,FP3,2022-04-09T03:00:00+00:00,2022-04-09T04:00:00+00:00,/static/2022/2022-04-10_Australian_Grand_Prix/2022-04-09_Practice_3/
+2022-03,Q,2022-04-09T06:00:00+00:00,2022-04-09T07:00:00+00:00,/static/2022/2022-04-10_Australian_Grand_Prix/2022-04-09_Qualifying/

@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2021-18,FP1,2021-11-05T17:30:00+00:00,2021-11-05T18:30:00+00:00,/static/2021/2021-11-07_Mexico_City_Grand_Prix/2021-11-05_Practice_1/
+2021-18,FP2,2021-11-05T21:00:00+00:00,2021-11-05T22:00:00+00:00,/static/2021/2021-11-07_Mexico_City_Grand_Prix/2021-11-05_Practice_2/
+2021-18,FP3,2021-11-06T17:00:00+00:00,2021-11-06T18:00:00+00:00,/static/2021/2021-11-07_Mexico_City_Grand_Prix/2021-11-06_Practice_3/
+2021-18,Q,2021-11-06T20:00:00+00:00,2021-11-06T21:00:00+00:00,/static/2021/2021-11-07_Mexico_City_Grand_Prix/2021-11-06_Qualifying/

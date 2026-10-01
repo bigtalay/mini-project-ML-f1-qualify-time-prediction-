@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-08,FP1,2022-06-10T11:00:00+00:00,2022-06-10T12:00:00+00:00,/static/2022/2022-06-12_Azerbaijan_Grand_Prix/2022-06-10_Practice_1/
+2022-08,FP2,2022-06-10T14:00:00+00:00,2022-06-10T15:00:00+00:00,/static/2022/2022-06-12_Azerbaijan_Grand_Prix/2022-06-10_Practice_2/
+2022-08,FP3,2022-06-11T11:00:00+00:00,2022-06-11T12:00:00+00:00,/static/2022/2022-06-12_Azerbaijan_Grand_Prix/2022-06-11_Practice_3/
+2022-08,Q,2022-06-11T14:00:00+00:00,2022-06-11T15:00:00+00:00,/static/2022/2022-06-12_Azerbaijan_Grand_Prix/2022-06-11_Qualifying/

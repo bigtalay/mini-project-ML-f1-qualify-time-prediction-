@@ -1,0 +1,3 @@
+event_id,Session,start_utc,end_utc,source_path
+2023-12,FP1,2023-07-28T11:30:00+00:00,2023-07-28T12:30:00+00:00,/static/2023/2023-07-30_Belgian_Grand_Prix/2023-07-28_Practice_1/
+2023-12,Q,2023-07-28T15:00:00+00:00,2023-07-28T16:00:00+00:00,/static/2023/2023-07-30_Belgian_Grand_Prix/2023-07-28_Qualifying/

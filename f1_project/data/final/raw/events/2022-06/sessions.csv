@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-06,FP1,2022-05-20T12:00:00+00:00,2022-05-20T13:00:00+00:00,/static/2022/2022-05-22_Spanish_Grand_Prix/2022-05-20_Practice_1/
+2022-06,FP2,2022-05-20T15:00:00+00:00,2022-05-20T16:00:00+00:00,/static/2022/2022-05-22_Spanish_Grand_Prix/2022-05-20_Practice_2/
+2022-06,FP3,2022-05-21T11:00:00+00:00,2022-05-21T12:00:00+00:00,/static/2022/2022-05-22_Spanish_Grand_Prix/2022-05-21_Practice_3/
+2022-06,Q,2022-05-21T14:00:00+00:00,2022-05-21T15:00:00+00:00,/static/2022/2022-05-22_Spanish_Grand_Prix/2022-05-21_Qualifying/

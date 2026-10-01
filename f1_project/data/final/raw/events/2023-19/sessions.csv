@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2023-19,FP1,2023-10-27T18:30:00+00:00,2023-10-27T19:30:00+00:00,/static/2023/2023-10-29_Mexico_City_Grand_Prix/2023-10-27_Practice_1/
+2023-19,FP2,2023-10-27T22:00:00+00:00,2023-10-27T23:00:00+00:00,/static/2023/2023-10-29_Mexico_City_Grand_Prix/2023-10-27_Practice_2/
+2023-19,FP3,2023-10-28T17:30:00+00:00,2023-10-28T18:30:00+00:00,/static/2023/2023-10-29_Mexico_City_Grand_Prix/2023-10-28_Practice_3/
+2023-19,Q,2023-10-28T21:00:00+00:00,2023-10-28T22:00:00+00:00,/static/2023/2023-10-29_Mexico_City_Grand_Prix/2023-10-28_Qualifying/

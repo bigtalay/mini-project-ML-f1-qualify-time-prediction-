@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2021-04,FP1,2021-05-07T09:30:00+00:00,2021-05-07T10:30:00+00:00,/static/2021/2021-05-09_Spanish_Grand_Prix/2021-05-07_Practice_1/
+2021-04,FP2,2021-05-07T13:00:00+00:00,2021-05-07T14:00:00+00:00,/static/2021/2021-05-09_Spanish_Grand_Prix/2021-05-07_Practice_2/
+2021-04,FP3,2021-05-08T10:00:00+00:00,2021-05-08T11:00:00+00:00,/static/2021/2021-05-09_Spanish_Grand_Prix/2021-05-08_Practice_3/
+2021-04,Q,2021-05-08T13:00:00+00:00,2021-05-08T14:00:00+00:00,/static/2021/2021-05-09_Spanish_Grand_Prix/2021-05-08_Qualifying/

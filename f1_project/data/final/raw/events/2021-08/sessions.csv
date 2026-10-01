@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2021-08,FP1,2021-06-25T09:30:00+00:00,2021-06-25T10:30:00+00:00,/static/2021/2021-06-27_Styrian_Grand_Prix/2021-06-25_Practice_1/
+2021-08,FP2,2021-06-25T13:00:00+00:00,2021-06-25T14:00:00+00:00,/static/2021/2021-06-27_Styrian_Grand_Prix/2021-06-25_Practice_2/
+2021-08,FP3,2021-06-26T10:00:00+00:00,2021-06-26T11:00:00+00:00,/static/2021/2021-06-27_Styrian_Grand_Prix/2021-06-26_Practice_3/
+2021-08,Q,2021-06-26T13:00:00+00:00,2021-06-26T14:00:00+00:00,/static/2021/2021-06-27_Styrian_Grand_Prix/2021-06-26_Qualifying/

@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-18,FP1,2022-10-07T03:00:00+00:00,2022-10-07T04:00:00+00:00,/static/2022/2022-10-09_Japanese_Grand_Prix/2022-10-07_Practice_1/
+2022-18,FP2,2022-10-07T06:00:00+00:00,2022-10-07T07:30:00+00:00,/static/2022/2022-10-09_Japanese_Grand_Prix/2022-10-07_Practice_2/
+2022-18,FP3,2022-10-08T03:00:00+00:00,2022-10-08T04:00:00+00:00,/static/2022/2022-10-09_Japanese_Grand_Prix/2022-10-08_Practice_3/
+2022-18,Q,2022-10-08T06:00:00+00:00,2022-10-08T07:00:00+00:00,/static/2022/2022-10-09_Japanese_Grand_Prix/2022-10-08_Qualifying/

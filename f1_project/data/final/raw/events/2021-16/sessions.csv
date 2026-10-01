@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2021-16,FP1,2021-10-08T08:30:00+00:00,2021-10-08T09:30:00+00:00,/static/2021/2021-10-10_Turkish_Grand_Prix/2021-10-08_Practice_1/
+2021-16,FP2,2021-10-08T12:00:00+00:00,2021-10-08T13:00:00+00:00,/static/2021/2021-10-10_Turkish_Grand_Prix/2021-10-08_Practice_2/
+2021-16,FP3,2021-10-09T09:00:00+00:00,2021-10-09T10:00:00+00:00,/static/2021/2021-10-10_Turkish_Grand_Prix/2021-10-09_Practice_3/
+2021-16,Q,2021-10-09T12:00:00+00:00,2021-10-09T13:00:00+00:00,/static/2021/2021-10-10_Turkish_Grand_Prix/2021-10-09_Qualifying/

@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2023-14,FP1,2023-09-01T11:30:00+00:00,2023-09-01T12:30:00+00:00,/static/2023/2023-09-03_Italian_Grand_Prix/2023-09-01_Practice_1/
+2023-14,FP2,2023-09-01T15:00:00+00:00,2023-09-01T16:00:00+00:00,/static/2023/2023-09-03_Italian_Grand_Prix/2023-09-01_Practice_2/
+2023-14,FP3,2023-09-02T10:30:00+00:00,2023-09-02T11:30:00+00:00,/static/2023/2023-09-03_Italian_Grand_Prix/2023-09-02_Practice_3/
+2023-14,Q,2023-09-02T14:00:00+00:00,2023-09-02T15:00:00+00:00,/static/2023/2023-09-03_Italian_Grand_Prix/2023-09-02_Qualifying/

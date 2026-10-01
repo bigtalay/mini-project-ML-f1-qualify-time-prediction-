@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2023-10,FP1,2023-07-07T11:30:00+00:00,2023-07-07T12:30:00+00:00,/static/2023/2023-07-09_British_Grand_Prix/2023-07-07_Practice_1/
+2023-10,FP2,2023-07-07T15:00:00+00:00,2023-07-07T16:00:00+00:00,/static/2023/2023-07-09_British_Grand_Prix/2023-07-07_Practice_2/
+2023-10,FP3,2023-07-08T10:30:00+00:00,2023-07-08T11:30:00+00:00,/static/2023/2023-07-09_British_Grand_Prix/2023-07-08_Practice_3/
+2023-10,Q,2023-07-08T14:00:00+00:00,2023-07-08T15:00:00+00:00,/static/2023/2023-07-09_British_Grand_Prix/2023-07-08_Qualifying/

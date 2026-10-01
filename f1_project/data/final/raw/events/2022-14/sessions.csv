@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-14,FP1,2022-08-26T12:00:00+00:00,2022-08-26T13:00:00+00:00,/static/2022/2022-08-28_Belgian_Grand_Prix/2022-08-26_Practice_1/
+2022-14,FP2,2022-08-26T15:00:00+00:00,2022-08-26T16:00:00+00:00,/static/2022/2022-08-28_Belgian_Grand_Prix/2022-08-26_Practice_2/
+2022-14,FP3,2022-08-27T11:00:00+00:00,2022-08-27T12:00:00+00:00,/static/2022/2022-08-28_Belgian_Grand_Prix/2022-08-27_Practice_3/
+2022-14,Q,2022-08-27T14:00:00+00:00,2022-08-27T15:00:00+00:00,/static/2022/2022-08-28_Belgian_Grand_Prix/2022-08-27_Qualifying/

@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-16,FP1,2022-09-09T12:00:00+00:00,2022-09-09T13:00:00+00:00,/static/2022/2022-09-11_Italian_Grand_Prix/2022-09-09_Practice_1/
+2022-16,FP2,2022-09-09T15:00:00+00:00,2022-09-09T16:00:00+00:00,/static/2022/2022-09-11_Italian_Grand_Prix/2022-09-09_Practice_2/
+2022-16,FP3,2022-09-10T11:00:00+00:00,2022-09-10T12:00:00+00:00,/static/2022/2022-09-11_Italian_Grand_Prix/2022-09-10_Practice_3/
+2022-16,Q,2022-09-10T14:00:00+00:00,2022-09-10T15:00:00+00:00,/static/2022/2022-09-11_Italian_Grand_Prix/2022-09-10_Qualifying/

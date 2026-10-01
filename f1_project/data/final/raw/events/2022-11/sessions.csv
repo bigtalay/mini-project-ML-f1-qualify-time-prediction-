@@ -1,0 +1,4 @@
+event_id,Session,start_utc,end_utc,source_path
+2022-11,FP1,2022-07-08T11:30:00+00:00,2022-07-08T12:30:00+00:00,/static/2022/2022-07-10_Austrian_Grand_Prix/2022-07-08_Practice_1/
+2022-11,Q,2022-07-08T15:00:00+00:00,2022-07-08T16:00:00+00:00,/static/2022/2022-07-10_Austrian_Grand_Prix/2022-07-08_Qualifying/
+2022-11,FP2,2022-07-09T10:30:00+00:00,2022-07-09T11:30:00+00:00,/static/2022/2022-07-10_Austrian_Grand_Prix/2022-07-09_Practice_2/

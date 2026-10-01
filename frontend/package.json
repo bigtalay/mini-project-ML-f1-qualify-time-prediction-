@@ -1,0 +1,31 @@
+{
+  "name": "f1-weekend-intelligence",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && vite build",
+    "lint": "tsc --noEmit",
+    "schema": "openapi-typescript ../f1_project/openapi.json -o src/api.d.ts",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.2.5",
+    "@fontsource/ibm-plex-sans-thai": "^5.2.5",
+    "echarts": "^6.0.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.3",
+    "openapi-typescript": "^7.9.1",
+    "prettier": "3.6.2",
+    "typescript": "~5.9.2",
+    "vite": "^7.1.5"
+  }
+}

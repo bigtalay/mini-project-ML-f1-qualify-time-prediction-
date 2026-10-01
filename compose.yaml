@@ -1,0 +1,42 @@
+name: f1-weekend-intelligence
+
+services:
+  prepare:
+    image: f1-weekend-intelligence:local
+    command: ["python", "-c", "from intelligence.final_model import load_final; load_final(); print('Notebook model ready')"]
+    volumes:
+      - ./f1_project/data/final:/workspace/f1_project/data/final:ro
+    restart: "no"
+
+  app:
+    image: f1-weekend-intelligence:local
+    build: .
+    depends_on:
+      prepare:
+        condition: service_completed_successfully
+    volumes:
+      - ./f1_project/data/final:/workspace/f1_project/data/final:ro
+    ports:
+      - "127.0.0.1:8501:8501"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/api/v1/health', timeout=5)"]
+      interval: 15s
+      timeout: 8s
+      start_period: 45s
+      retries: 3
+
+  jupyter:
+    image: f1-weekend-intelligence:local
+    build: .
+    profiles: ["notebook"]
+    command: ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--IdentityProvider.token=", "--ServerApp.password=", "--ServerApp.root_dir=/workspace/f1_project"]
+    ports:
+      - "127.0.0.1:8888:8888"
+    volumes:
+      - ./f1_project:/workspace/f1_project
+
+  test:
+    image: f1-weekend-intelligence:local
+    profiles: ["tools"]
+    command: ["python", "-m", "unittest", "discover", "-s", "tests", "-v"]

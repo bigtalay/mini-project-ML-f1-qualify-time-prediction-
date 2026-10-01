@@ -1,0 +1,5 @@
+event_id,Session,start_utc,end_utc,source_path
+2023-15,FP1,2023-09-15T09:30:00+00:00,2023-09-15T10:30:00+00:00,/static/2023/2023-09-17_Singapore_Grand_Prix/2023-09-15_Practice_1/
+2023-15,FP2,2023-09-15T13:00:00+00:00,2023-09-15T14:00:00+00:00,/static/2023/2023-09-17_Singapore_Grand_Prix/2023-09-15_Practice_2/
+2023-15,FP3,2023-09-16T09:30:00+00:00,2023-09-16T10:30:00+00:00,/static/2023/2023-09-17_Singapore_Grand_Prix/2023-09-16_Practice_3/
+2023-15,Q,2023-09-16T13:00:00+00:00,2023-09-16T14:00:00+00:00,/static/2023/2023-09-17_Singapore_Grand_Prix/2023-09-16_Qualifying/
