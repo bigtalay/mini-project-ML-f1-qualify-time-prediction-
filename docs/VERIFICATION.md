@@ -28,14 +28,19 @@ Tests regenerate a deleted circuits.csv offline; changed source round numbers do
 | Leakage / preprocessing | Sprint post-Q practice excluded; partition event sets disjoint; saved scaler mean equals 2021–2022 X only |
 | Inference parity | Notebook saved predictions, joblib and custom/history API agree; time parsing, missing/invalid inputs and geometry coverage checked |
 | Frontend | `npm run lint`, `npm run build`: passed |
-| Browser | 14 tests passed on desktop and mobile in the production UI |
+| Docker | Build/startup passed; app healthy on 8501 and Jupyter available on 8888; preparation validates the saved model |
+| Browser | 14 tests passed on desktop and mobile in the production UI (19.9 s) |
 | UI inspection | Actual 1440×1000 and 390×844 viewports inspected; form precedes historical tables, FP1 visible on initial viewport |
 | Release layout | One project notebook, one deployed model; no obsolete runtime entry points |
 | Source integrity | `git diff` reports no raw or circuit snapshot changes; loader verifies byte-level SHA256 |
+| Clean clone / offline | Local clone of `457f207`, no FastF1 cache: full Notebook execution and 10 tests passed in network-disabled containers |
+
+Clean-clone verification binds only the cloned `f1_project/` into the production image. Full Notebook execution writes its output to `/tmp/verified-final.ipynb`; raw, circuit CSV and saved SVR bytes remain unchanged. Random Forest validation scores may differ at floating-point rounding precision across threaded runs without changing the chosen model.
 
 The browser suite exercises manual button/Enter submission, clearing stale results after edits, API parity, missing/invalid/out-of-range inputs, historical What-if/reset, source-lap links, CSV, URL refresh, retry, keyboard navigation, sprint/rain/missing-session states and horizontal overflow.
 
 The existing ECharts bundle is approximately 581 kB and emits a non-failing chunk-size warning. FastAPI TestClient emits an upstream deprecation warning for the locked HTTP client; tests pass. Neither warning is suppressed.
+The browser also requests an absent favicon (404); the application/API interactions themselves pass.
 
 ## Repeat locally
 
@@ -57,6 +62,11 @@ Full Notebook execution regenerates processed files and the saved model, leaving
 ## Performance and boundaries
 
 Browser checks assert prediction-input readiness below 3 s and ten warm lap API reads below 500 ms each. Per-run actual measurements and screenshots are stored in ignored `frontend/test-results/`; these local checks are not a public-hosting or throughput SLA.
+
+| Viewport | Input-ready time | Maximum of 10 warm API reads |
+|---|---:|---:|
+| Desktop 1440 × 1000 | 216.5 ms | 14.4 ms |
+| Mobile-emulated 390 × 844 | 321.9 ms | 19.4 ms |
 
 Environment: Windows 11, Intel i5-13500HX (20 logical processors), 16 GiB RAM; Docker Engine 29.1.3 Linux; Chromium, desktop 1440×1000 and mobile-emulated 390×844. No network/CPU throttling. Image downloads/builds are excluded from readiness. Mobile is emulation, not a physical device test.
 
