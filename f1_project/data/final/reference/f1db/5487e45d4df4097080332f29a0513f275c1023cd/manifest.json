@@ -1,0 +1,390 @@
+{
+  "2021/index.json": {
+    "url": "https://api.github.com/repos/f1db/f1db/contents/src/data/seasons/2021/races?ref=5487e45d4df4097080332f29a0513f275c1023cd",
+    "sha256": "a72252a685cfb221d2abf022657aac4e424af5e82733491cd62d00d49440597b"
+  },
+  "2021/01-bahrain/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/01-bahrain/race.yml",
+    "sha256": "ea71125360587aa00d842d3231c789d43d84c654159796479403ed449c7854e1"
+  },
+  "2021/02-emilia-romagna/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/02-emilia-romagna/race.yml",
+    "sha256": "06d21858e721dfe44d828afd1254e21c86740320990cf8750e63ecde670ee8fb"
+  },
+  "2021/03-portugal/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/03-portugal/race.yml",
+    "sha256": "a9058cfe4b60be3abf6be55340e69fd9b40234fa57d010935eefbd955264c779"
+  },
+  "2021/04-spain/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/04-spain/race.yml",
+    "sha256": "b1206c53ee2a94d13f676872e51f32d889f928680328f8645514bab63e475c05"
+  },
+  "2021/05-monaco/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/05-monaco/race.yml",
+    "sha256": "c566bba9127d5a7983f570f8b76430c81fb466b6672768f13d487e353fc51011"
+  },
+  "2021/06-azerbaijan/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/06-azerbaijan/race.yml",
+    "sha256": "a23d1932016c3c09a0275b0ad835891af545cd612a0d9f1eaef0938a7acf2bfc"
+  },
+  "2021/07-france/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/07-france/race.yml",
+    "sha256": "0df7b87e58f81dbeef6b26a4184dd654047298f7021b34782787e1856ac65bda"
+  },
+  "2021/08-styria/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/08-styria/race.yml",
+    "sha256": "446e8dc0dfea25772c634a70f37efb664934bcb68b49bff27a901d42d6bbffaa"
+  },
+  "2021/09-austria/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/09-austria/race.yml",
+    "sha256": "51a3b680b8e1ed49982524ef3972fb00b3f7d91c75796b5c6ef5dd3e898888e2"
+  },
+  "2021/10-great-britain/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/10-great-britain/race.yml",
+    "sha256": "9615e39b0bd5062ea0e04b18d78801e76a66f108e16d1f9142342df4743cfe1e"
+  },
+  "2021/11-hungary/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/11-hungary/race.yml",
+    "sha256": "7d101b04da8c78484b44d9e55344a4197a87fadb1476a347a415607b5d0bd781"
+  },
+  "2021/12-belgium/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/12-belgium/race.yml",
+    "sha256": "9f19a94844bac798fc3a7e714062a05dedc5e4cd96e77e6a34ab737301b91fe3"
+  },
+  "2021/13-netherlands/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/13-netherlands/race.yml",
+    "sha256": "e57a076ed685f508d9f8ff3b3299301302e845bdcee22ab08504de85f33491f0"
+  },
+  "2021/14-italy/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/14-italy/race.yml",
+    "sha256": "f2c72c4597109139d0009b940aa3edfef3593bb88c05860f7e81336181359e1c"
+  },
+  "2021/15-russia/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/15-russia/race.yml",
+    "sha256": "70c20a7f826d13226b9f5d022198a1c0089307e5d8ed4a8f511f15d12a56c90f"
+  },
+  "2021/16-turkey/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/16-turkey/race.yml",
+    "sha256": "c7b1a59956676e1be7155120f26fa4a87cc4753069b32a8491405c9a9af3bacd"
+  },
+  "2021/17-united-states/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/17-united-states/race.yml",
+    "sha256": "925cddbbcb319cbdac86493f0fb416096987def6c80a86489abc4075ea68b0e7"
+  },
+  "2021/18-mexico/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/18-mexico/race.yml",
+    "sha256": "828e3f2ab46c79f376a34f1e2ca9dee6aa74bc4045cbd633e112bdfb5b7e6f53"
+  },
+  "2021/19-sao-paulo/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/19-sao-paulo/race.yml",
+    "sha256": "4fb2f4c8ed5942c14a960bd504e13212904c90bcb696647e2dde9946758afafe"
+  },
+  "2021/20-qatar/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/20-qatar/race.yml",
+    "sha256": "42c9c4f903562efe9ed894ef1d0014b23f5ec9905d93f96a915aea5a0b527daa"
+  },
+  "2021/21-saudi-arabia/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/21-saudi-arabia/race.yml",
+    "sha256": "0ea160a5e8643818394c2861eecae1e4ec2efd9f2ee27f4201b8b3cc4980eed7"
+  },
+  "2021/22-abu-dhabi/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2021/races/22-abu-dhabi/race.yml",
+    "sha256": "48bce6ea33ae0a6f18bbdfab4025059f8134606aa93e9e8f9efd5d7aefafc35c"
+  },
+  "2022/index.json": {
+    "url": "https://api.github.com/repos/f1db/f1db/contents/src/data/seasons/2022/races?ref=5487e45d4df4097080332f29a0513f275c1023cd",
+    "sha256": "79d6b7a63a28e3c29addd24651050cfd2ecabd07fd69adc73fbe3db4353e9e96"
+  },
+  "2022/01-bahrain/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/01-bahrain/race.yml",
+    "sha256": "ca5514fe1cc16117b47c2d2f7e1f30341d3430467dc68d445e1a46bcf0ed3cdb"
+  },
+  "2022/02-saudi-arabia/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/02-saudi-arabia/race.yml",
+    "sha256": "c633a140c617acf3008ac13d3a52e65a0dca87e41cd395aad2487746b095a6c3"
+  },
+  "2022/03-australia/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/03-australia/race.yml",
+    "sha256": "36fae9e5c6e16920cc42e6bc0b785d7dd2ff52f811c87cc817c68a9f4811231b"
+  },
+  "2022/04-emilia-romagna/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/04-emilia-romagna/race.yml",
+    "sha256": "41ea655b1a2509bb2b92eaf6041fcd26ac1ec7e5696e285029b2ea848559adc4"
+  },
+  "2022/05-miami/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/05-miami/race.yml",
+    "sha256": "8ff50f1e24d23c10f734a33d6355db48a760fedb04789dab9f768b07bb5ca7db"
+  },
+  "2022/06-spain/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/06-spain/race.yml",
+    "sha256": "f607ca7c8eb9b3ad3caa9db0c4aa6e27e224d0e308ae01cd453ed50a21580fe7"
+  },
+  "2022/07-monaco/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/07-monaco/race.yml",
+    "sha256": "c7a9dc94861188458d752ecbc477fe288004709e41385fdba8bf71b63fe13f3c"
+  },
+  "2022/08-azerbaijan/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/08-azerbaijan/race.yml",
+    "sha256": "b642d01d0653447d20c52e0b055a7db3098bf1874848d76a1d5cf54f2bd490af"
+  },
+  "2022/09-canada/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/09-canada/race.yml",
+    "sha256": "c1b1918021dc887e38f509b5db877079c53d5272765fdc7f3c6c72031f35125d"
+  },
+  "2022/10-great-britain/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/10-great-britain/race.yml",
+    "sha256": "093519df1ca04b10cdaf77791876e717ee60cf32f6e5332e447d042d334c6620"
+  },
+  "2022/11-austria/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/11-austria/race.yml",
+    "sha256": "30e0dceb5465f4711569db0788620b4152d11a6b932a4afa1f075115793ccc6a"
+  },
+  "2022/12-france/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/12-france/race.yml",
+    "sha256": "3e3474cf665a354e424161e1c18f76ec61ddcf02350a6970e92a8085447bfd3c"
+  },
+  "2022/13-hungary/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/13-hungary/race.yml",
+    "sha256": "d518cce53e5708cd16d408a85eb34d639bc431f9be66d2be047a4edb3ab93363"
+  },
+  "2022/14-belgium/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/14-belgium/race.yml",
+    "sha256": "76c1222d2e7b0b02b5ced14432c9425252565b9c6590a71e4b01eb00f646499e"
+  },
+  "2022/15-netherlands/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/15-netherlands/race.yml",
+    "sha256": "4ad3e1d0e8038764ce17db0fe863a364bdeeeaa7d764c0784124d85ffee2ad9c"
+  },
+  "2022/16-italy/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/16-italy/race.yml",
+    "sha256": "b31e4caf1c03e829c7fbe3550176df758ea1138257fc3fb3ffb7cc4fbc109ffe"
+  },
+  "2022/17-singapore/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/17-singapore/race.yml",
+    "sha256": "39b03e1f2e61fc707b4944d16814a9d5b7380100026741ab68af8a0637774c4e"
+  },
+  "2022/18-japan/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/18-japan/race.yml",
+    "sha256": "046fbf2472069f453f690f7f0cffb5139f52e0df642c9f4de596b263a731bd9c"
+  },
+  "2022/19-united-states/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/19-united-states/race.yml",
+    "sha256": "d4deeb0c5a771ecc1e14d6faa6554780d1915991816c3f244e597ca679265205"
+  },
+  "2022/20-mexico/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/20-mexico/race.yml",
+    "sha256": "ba4a45451fc665ec62b546989a8d3ea2f88ebe7e4a35ab190888c959dc6831fe"
+  },
+  "2022/21-sao-paulo/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/21-sao-paulo/race.yml",
+    "sha256": "407bd92594e4af939761fb556ea391ee7dd27dc9cbc942acb9e84226d0693f63"
+  },
+  "2022/22-abu-dhabi/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2022/races/22-abu-dhabi/race.yml",
+    "sha256": "041e6737c38714aaef3c4a0e16278210af5fc825a4fac061bcb2423c21e0cc95"
+  },
+  "2023/index.json": {
+    "url": "https://api.github.com/repos/f1db/f1db/contents/src/data/seasons/2023/races?ref=5487e45d4df4097080332f29a0513f275c1023cd",
+    "sha256": "2e17a9777acc85e5806377a82702750fba54d0522afd0e3b083b34fb36d9de5a"
+  },
+  "2023/01-bahrain/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/01-bahrain/race.yml",
+    "sha256": "0c9d19cd2ca9921961ec067329eae297eb57b5c892c98435cc5f28ebdf4b044b"
+  },
+  "2023/02-saudi-arabia/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/02-saudi-arabia/race.yml",
+    "sha256": "22ff928eb8df3d1d1c720604999b203147b4a0821895b2cb62c96b6f25f0b885"
+  },
+  "2023/03-australia/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/03-australia/race.yml",
+    "sha256": "ec70a4db557497f70c0699eebf11efef81473cab07de9a8f512d24c0d11a134e"
+  },
+  "2023/04-azerbaijan/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/04-azerbaijan/race.yml",
+    "sha256": "b2c82587e05aeeee041b0f4b2baec04672dcbe73139d523bfd70ef8a83020523"
+  },
+  "2023/05-miami/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/05-miami/race.yml",
+    "sha256": "ca9f1783e8cf514e07b0c78da8f7feb105401ff4931d8eb5f5386d3071bd008f"
+  },
+  "2023/06-monaco/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/06-monaco/race.yml",
+    "sha256": "0c6f55a81f34a68a32dd6fb0a4e4a5ca6cf4e99ce8bcd478cd2341eae8c64186"
+  },
+  "2023/07-spain/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/07-spain/race.yml",
+    "sha256": "f8174ee46de0a4bcc63ad2e458e0464c201510a750a3cd93b7702641ed28ad8d"
+  },
+  "2023/08-canada/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/08-canada/race.yml",
+    "sha256": "e344dd01cb4e63d81a5089dbd9bde3e6bc3e42ecca0ffb1228d377e407eb652f"
+  },
+  "2023/09-austria/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/09-austria/race.yml",
+    "sha256": "4b4ba716dc0f49b1b318920c66f2bf9c4b181ad7dc12e7bcfe39fd4b4ba5798c"
+  },
+  "2023/10-great-britain/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/10-great-britain/race.yml",
+    "sha256": "e12008fd4963948618634d1df1f9188062c935ec982018b8702ed209920b244e"
+  },
+  "2023/11-hungary/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/11-hungary/race.yml",
+    "sha256": "5f77f49ddbd2358727be0ba7479b2122118c63c0a8e5ab745dfb1d852f40ce13"
+  },
+  "2023/12-belgium/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/12-belgium/race.yml",
+    "sha256": "15cb8f859dd883221472332bf0c4dc436e41126782b08fc6185e89be536b6f4f"
+  },
+  "2023/13-netherlands/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/13-netherlands/race.yml",
+    "sha256": "816587b23baaeb0245e0768a0658f9f1da8331d62c6f37a781dbd7e49770550d"
+  },
+  "2023/14-italy/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/14-italy/race.yml",
+    "sha256": "86b6ecce7bc273c482dc4adca9c0d1307f7e8b558dd6aa3b0aab84772d63578f"
+  },
+  "2023/15-singapore/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/15-singapore/race.yml",
+    "sha256": "8c978892db5eba303b12ca7c90b17173deb1e201e345e475f5c3e3fde21842f1"
+  },
+  "2023/16-japan/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/16-japan/race.yml",
+    "sha256": "fe70b079900e4bfd5c1980d6ab149314b1cebf4ef02d1b74f792a6c1954ea492"
+  },
+  "2023/17-qatar/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/17-qatar/race.yml",
+    "sha256": "d52f251ca6691db66af58d206b0ed6bc81236e75a3ebe5379ea1c3baa298ee9c"
+  },
+  "2023/18-united-states/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/18-united-states/race.yml",
+    "sha256": "e8282f281de9225883aef3d5cda628986775b114b55b33f7f4feb4a819520902"
+  },
+  "2023/19-mexico/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/19-mexico/race.yml",
+    "sha256": "3e938b30bfc5f91cc8bd381a04a411e905a24fd6b70495d09ed207d9ada6cbec"
+  },
+  "2023/20-sao-paulo/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/20-sao-paulo/race.yml",
+    "sha256": "2628623a940c157ee2ab9223e74d58c83c20099881d9be8d31fcab0b34975b6e"
+  },
+  "2023/21-las-vegas/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/21-las-vegas/race.yml",
+    "sha256": "3bff2fdbc765a59848dfebaedd2c834fa56549e62877e6f31092cf9c7bc57d42"
+  },
+  "2023/22-abu-dhabi/race.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/seasons/2023/races/22-abu-dhabi/race.yml",
+    "sha256": "efae1dc55ebf59b674bea3fadb0c87219e691b9d9c252d67803039e6251fa9c6"
+  },
+  "grands-prix/bahrain.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/bahrain.yml",
+    "sha256": "fe4b6a5bc9e681d2ad3df3dcf3343fbc7f7b4b0d95a2f8eece150ad81c074da3"
+  },
+  "grands-prix/emilia-romagna.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/emilia-romagna.yml",
+    "sha256": "23f2bd322f90519d090893f5930df220f777606f3e3265f12aace4f4315ef54c"
+  },
+  "grands-prix/portugal.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/portugal.yml",
+    "sha256": "b17e4a5efc0163762b8b039af519f83312707fcdfc428ba7eb10044be9072fa6"
+  },
+  "grands-prix/spain.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/spain.yml",
+    "sha256": "af2345206f3a1143e0d2f19a6ed11561c6e41d0622b4a6c7660fea01ef49a763"
+  },
+  "grands-prix/monaco.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/monaco.yml",
+    "sha256": "702e457319c055e8a21e172627a767d05f9a399fa48dd649e6a1ea5e03a04df9"
+  },
+  "grands-prix/azerbaijan.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/azerbaijan.yml",
+    "sha256": "1873d343e8ae48b1dd2a215517aae532b78cfbc86ad65c64e037136cc8d390cc"
+  },
+  "grands-prix/france.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/france.yml",
+    "sha256": "51e32bd6f2aaf0e427ee6ecc449146552fda2f8accbe8fb256f87e1ad545cedf"
+  },
+  "grands-prix/styria.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/styria.yml",
+    "sha256": "94b2e547c8d54d8013e742d0c31a186bde8c8f30e6a05a5bf37063acb3f53776"
+  },
+  "grands-prix/austria.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/austria.yml",
+    "sha256": "5608855827460a6381be370db7828f221bd55d86e84e967f050f593f54e5c812"
+  },
+  "grands-prix/great-britain.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/great-britain.yml",
+    "sha256": "9dab8c3a012908d3e73019ed53c27bd93b5f5eb2e2e63cde96fe70490edf8400"
+  },
+  "grands-prix/hungary.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/hungary.yml",
+    "sha256": "34d18d4d3223e659152ce67d606209cb0debd0a6d753ba60123195e0f8380100"
+  },
+  "grands-prix/belgium.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/belgium.yml",
+    "sha256": "dacfc89c5b56bdae2c5c5f3e7ad23897d81cdbef6bfa89600f4f109e073cf6f8"
+  },
+  "grands-prix/netherlands.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/netherlands.yml",
+    "sha256": "4835d57d20a087f660cf93b9bd500f11ab24ac0e6d23f85a94dd85bcc3ee2a81"
+  },
+  "grands-prix/italy.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/italy.yml",
+    "sha256": "77df024f1be7a9fc086170056ae5878248a37a3c645ecda3f0000e485157d851"
+  },
+  "grands-prix/russia.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/russia.yml",
+    "sha256": "2dfa5522ecd5f72e94072c0cfe71c27ab2e35b9ed56d0b6db0ab118134633ad1"
+  },
+  "grands-prix/turkey.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/turkey.yml",
+    "sha256": "0199bba2c0ea2c768cab1ca250ec03858c370650cbd884cc499bb8b2212313a0"
+  },
+  "grands-prix/united-states.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/united-states.yml",
+    "sha256": "420da82eb18570de60ca0e3c354b2dccb3dd9ef6a278c501a6c75ad137bf5356"
+  },
+  "grands-prix/mexico.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/mexico.yml",
+    "sha256": "ea0f5a75728e5672057a608f757a7aee292a54257e69ca3c97e91e61ef79b309"
+  },
+  "grands-prix/sao-paulo.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/sao-paulo.yml",
+    "sha256": "16d3589857266a02c637081f19bdd2997ded54d2ffb90cc66f49da52ae6cb190"
+  },
+  "grands-prix/qatar.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/qatar.yml",
+    "sha256": "4da40b7a6942223b61b4cebae7a08acbd8803d6659dbc3d75509baa21f686ef3"
+  },
+  "grands-prix/saudi-arabia.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/saudi-arabia.yml",
+    "sha256": "39a88940ac5685ca44fbb66740382e541482df0a07a454391c0e540af140121d"
+  },
+  "grands-prix/abu-dhabi.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/abu-dhabi.yml",
+    "sha256": "8318d30863fe321431cf8c6fe17196922042598a3f053896dcc6d1cb0ca61eab"
+  },
+  "grands-prix/australia.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/australia.yml",
+    "sha256": "0c00ccc926719a8f8c6c8e3661fdeb7bce236bef4420b49520fd97ded188ad47"
+  },
+  "grands-prix/miami.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/miami.yml",
+    "sha256": "d3af0d6420df7fbff2c3a53ee00733a9c6fef641d9c8548c5e5768e4129c545f"
+  },
+  "grands-prix/canada.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/canada.yml",
+    "sha256": "c6ab52ead8234e44417ab8b3c14daaaef9401b8abb52089c9c2f5d9ee9b867f1"
+  },
+  "grands-prix/singapore.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/singapore.yml",
+    "sha256": "e6edf58dd78baa9063402104f582be106eb3fd67d3092eb2ccdeb8f5b2fb8075"
+  },
+  "grands-prix/japan.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/japan.yml",
+    "sha256": "1b6ba4837daea0862f68e510e2d457fb92c0f375c434f30f9c5b64572cbec68c"
+  },
+  "grands-prix/las-vegas.yml": {
+    "url": "https://raw.githubusercontent.com/f1db/f1db/5487e45d4df4097080332f29a0513f275c1023cd/src/data/grands-prix/las-vegas.yml",
+    "sha256": "94d8d5a279c046a36f54448989e0e1175178373fb6c82a5f715121cf4a4d0a15"
+  }
+}

@@ -2,11 +2,12 @@
 import contextlib
 import io
 import hashlib
+import json
 from pathlib import Path
 import tempfile
 import unittest
 from types import SimpleNamespace
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import joblib
 import nbformat
@@ -15,6 +16,57 @@ import pandas as pd
 
 
 class FinalNotebookTest(unittest.TestCase):
+    def test_circuit_sources_rebuild_offline_and_reject_wrong_matches(self):
+        root = Path(__file__).resolve().parents[1]
+        notebook = nbformat.read(root / 'final.ipynb', as_version=4)
+        code = {c.metadata['tags'][0]: c.source for c in notebook.cells if c.cell_type == 'code'}
+        circuit_file = root / 'data/final/reference/circuits.csv'
+        events = pd.read_csv(root / 'data/final/raw/events.csv')
+        scope = dict(Path=Path, ROOT=root, CIRCUIT_FILE=circuit_file, YEARS=[2021, 2022, 2023],
+                     pd=pd, np=np, hashlib=hashlib, json=json, events=events, display=lambda *args: None)
+        with patch('requests.get', side_effect=AssertionError('Published sources must work offline')), \
+                contextlib.redirect_stdout(io.StringIO()):
+            for tag in ['circuit_download', 'circuit_match']:
+                exec(compile(code[tag], f'final.ipynb:{tag}', 'exec'), scope)
+        pairs = scope['circuit_matches'].set_index('event_id')
+        self.assertEqual(len(pairs), 66)
+        self.assertEqual(pairs.loc['2021-01', 'circuit_id'], 'bahrain')
+        self.assertEqual(pairs.loc['2023-21', 'match_method'], 'Grand Prix name + UTC_date')
+        self.assertEqual(pairs.loc['2021-16', 'match_method'], 'Grand Prix name; source date mismatch')
+        columns = ['event_id', 'circuit_id', 'layout_id', 'circuit_length_km', 'corner_count', 'source_url']
+        generated = scope['circuit_matches'][columns].sort_values('event_id').reset_index(drop=True)
+        self.assertEqual(generated.to_csv(index=False, float_format='%.3f').encode('utf-8'), circuit_file.read_bytes())
+        # Recreate a deleted derived CSV from original sources, not from the old CSV's IDs.
+        with tempfile.TemporaryDirectory() as temporary, contextlib.redirect_stdout(io.StringIO()):
+            scope['CIRCUIT_FILE'] = Path(temporary) / 'circuits.csv'
+            exec(compile(code['circuit_save'], 'final.ipynb:circuit_save', 'exec'), scope)
+            self.assertEqual(scope['CIRCUIT_FILE'].read_bytes(), circuit_file.read_bytes())
+        match = scope['match_circuits']
+        source = scope['f1db'].copy()
+        source['f1db_round'] = 999  # Source round numbers never drive the match.
+        pd.testing.assert_series_equal(match(events, source).circuit_id, scope['circuit_matches'].circuit_id)
+        wrong_name = events.copy()
+        wrong_name.loc[0, 'EventName'] = 'Unknown Grand Prix'
+        wrong_name.loc[0, 'OfficialEventName'] = 'Unknown Official Grand Prix'
+        with self.assertRaisesRegex(AssertionError, 'จับคู่ไม่ได้'):
+            match(wrong_name, source)
+        wrong_date = events.copy()
+        wrong_date.loc[0, 'EventDate'] = '2021-04-01'
+        wrong_date.loc[0, 'Session5DateUtc'] = '2021-04-01 12:00:00'
+        with self.assertRaisesRegex(AssertionError, 'วันที่ไม่ตรง'):
+            match(wrong_date, source)
+        with self.assertRaisesRegex(AssertionError, 'ไม่เป็นคู่ที่ชัดเจน'):
+            match(events, pd.concat([source, source.iloc[[0]]], ignore_index=True))
+        # Corrupt cached source bytes must fail before use, never silently become trusted data.
+        with tempfile.TemporaryDirectory() as temporary:
+            scope['SOURCE'] = Path(temporary)
+            bad = scope['SOURCE'] / 'race.yml'
+            bad.write_bytes(b'changed')
+            scope['manifest'] = {'race.yml': {'url': 'https://example.test/race.yml',
+                                             'sha256': hashlib.sha256(b'original').hexdigest()}}
+            with self.assertRaisesRegex(AssertionError, 'ต้นทางเปลี่ยน'):
+                scope['fetch_source']('race.yml', 'https://example.test/race.yml')
+
     def test_cancelled_practice_is_missing_not_failed(self):
         notebook = nbformat.read(Path(__file__).resolve().parents[1] / 'final.ipynb', as_version=4)
         collector = next(c.source for c in notebook.cells if 'collector' in c.metadata.get('tags', []))

@@ -5,11 +5,11 @@ SVR (RBF),"{'C': 10, 'epsilon': 0.1, 'gamma': 0.01}",2.8409969078214887,4.915530
 SVR (RBF),"{'C': 10, 'epsilon': 0.5, 'gamma': 0.01}",2.904879839968385,4.918013544933892
 Linear Regression,{},3.333062446530799,5.3013210216971345
 Linear Regression,{'fit_intercept': True},3.333062446530799,5.3013210216971345
-Random Forest,{},3.0586476503018765,5.360868976226749
-Random Forest,"{'max_depth': None, 'min_samples_leaf': 3}",3.058647650301877,5.360868976226753
-Random Forest,"{'max_depth': 10, 'min_samples_leaf': 3}",3.064102996207414,5.371637340706075
+Random Forest,{},3.0586476503018734,5.3608689762267465
+Random Forest,"{'max_depth': None, 'min_samples_leaf': 3}",3.058647650301877,5.360868976226752
+Random Forest,"{'max_depth': 10, 'min_samples_leaf': 3}",3.064102996207413,5.371637340706075
 Random Forest,"{'max_depth': 10, 'min_samples_leaf': 1}",3.0536536726029837,5.384065505859281
-Random Forest,"{'max_depth': None, 'min_samples_leaf': 1}",3.0883020479103043,5.441350460139167
+Random Forest,"{'max_depth': None, 'min_samples_leaf': 1}",3.0883020479103065,5.4413504601391685
 Gradient Boosting,"{'learning_rate': 0.03, 'max_depth': 3}",3.5720590281024496,6.177725395651335
 Gradient Boosting,"{'learning_rate': 0.05, 'max_depth': 3}",3.5991533373879214,6.212196272302103
 Gradient Boosting,{},3.619480115715956,6.366626540472695
