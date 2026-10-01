@@ -7,9 +7,9 @@ import Analysis from "./pages/Analysis";
 import Prediction from "./pages/Prediction";
 import Method from "./pages/Method";
 const tabs = [
+  ["prediction", "Prediction", "ทำนายเวลา"],
   ["weekend", "Weekend", "ภาพรวม"],
   ["compare", "Compare", "เทียบนักขับ"],
-  ["prediction", "Prediction", "ผลทำนาย"],
   ["method", "Data & Method", "ข้อมูลและวิธีการ"],
 ];
 export default function App() {
@@ -21,7 +21,7 @@ export default function App() {
     choices.find((e) => e.event_id === state.query.get("event")) || choices[0];
   const view = tabs.some((t) => t[0] === state.query.get("view"))
     ? state.query.get("view")!
-    : "weekend";
+    : "prediction";
   useEffect(() => {
     if (!events.data?.length) return;
     if (!event) {
@@ -150,7 +150,9 @@ function Workspace({
   if (!overview.data) return <Status {...overview} />;
   return (
     <div data-testid="workspace-ready">
-      <div className="event-heading">
+      <div
+        className={`event-heading ${view === "prediction" ? "prediction-heading" : ""}`}
+      >
         <div className="round">
           R<span>{String(event.round).padStart(2, "0")}</span>
         </div>
@@ -163,11 +165,19 @@ function Workspace({
               : "SPRINT WEEKEND"}
           </p>
           <h1>
-            {event.name.replace(" Grand Prix", "")}
-            <span> Grand Prix</span>
+            {view === "prediction" ? (
+              "ทำนายเวลา Qualifying"
+            ) : (
+              <>
+                {event.name.replace(" Grand Prix", "")}
+                <span> Grand Prix</span>
+              </>
+            )}
           </h1>
           <p className="venue">
-            {event.circuit} · {event.location}
+            {view === "prediction"
+              ? `${event.name} · เลือกสนามด้านบน แล้วกรอกเวลาซ้อมด้านล่าง`
+              : `${event.circuit} · ${event.location}`}
           </p>
         </div>
         <div className="event-stamp">

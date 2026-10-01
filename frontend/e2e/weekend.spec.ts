@@ -6,7 +6,9 @@ test("open, compare, inspect real lap, persist filters and download matching CSV
 }, info) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await page.goto("/?year=2023&event=2023-01&drivers=VER,HAM&session=FP2");
+  await page.goto(
+    "/?year=2023&event=2023-01&view=weekend&drivers=VER,HAM&session=FP2",
+  );
   await expect(page.getByTestId("workspace-ready")).toBeVisible();
   await expect(
     page.getByRole("button", { name: /ดู VER lap/ }).first(),
@@ -90,6 +92,10 @@ test("manual circuit inputs, missing sessions, API parity, source lap and export
   await expect(page.getByLabel("FP1 ชนิดยาง")).toHaveCount(0);
   await expect(page.getByText(/ความยาวสนาม 5.412 km/)).toBeVisible();
   const result = page.getByTestId("scenario-result");
+  await expect(result).toHaveCount(0);
+  await page
+    .getByRole("button", { name: "ทำนายเวลา Qualifying", exact: true })
+    .click();
   await expect(result).toContainText("FP2: เติมเวลาจาก FP1");
   const response = await page.request.post("/api/v1/predict/custom", {
     data: { event_id: "2023-01", FP1: { time: "1:30.000" } },
@@ -102,11 +108,19 @@ test("manual circuit inputs, missing sessions, API parity, source lap and export
   expect(body.inputs.corner_count).toBe(15);
   expect(Object.keys(body.inputs)).toHaveLength(5);
   await page.getByLabel("มีข้อมูล FP1", { exact: true }).uncheck();
+  await expect(result).toHaveCount(0);
+  await page
+    .getByRole("button", { name: "ทำนายเวลา Qualifying", exact: true })
+    .click();
   await expect(page.getByRole("alert")).toContainText("ไม่มี Practice");
   await page.getByLabel("มีข้อมูล FP2", { exact: true }).check();
   await page.getByLabel("What-if FP2_Time", { exact: true }).fill("1:99");
+  await page
+    .getByRole("button", { name: "ทำนายเวลา Qualifying", exact: true })
+    .click();
   await expect(page.getByRole("alert")).toContainText("รูปแบบเวลาต้องเป็น");
   await page.getByLabel("What-if FP2_Time", { exact: true }).fill("200");
+  await page.getByLabel("What-if FP2_Time", { exact: true }).press("Enter");
   await expect(result).toContainText("อยู่นอกช่วงข้อมูลฝึก");
   expect(
     await page.evaluate(
@@ -131,9 +145,7 @@ test("manual circuit inputs, missing sessions, API parity, source lap and export
   );
   await page.goBack();
   const downloadPromise = page.waitForEvent("download");
-  await page
-    .getByRole("link", { name: "↓ CSV", exact: true })
-    .click();
+  await page.getByRole("link", { name: "↓ CSV", exact: true }).click();
   const downloaded = await downloadPromise;
   const csv = await fs.readFile((await downloaded.path())!, "utf8");
   expect(csv).toContain("circuit_length_km");
@@ -144,7 +156,7 @@ test("manual circuit inputs, missing sessions, API parity, source lap and export
 test("sprint, rain, missing data and audit are explicit", async ({
   page,
 }, info) => {
-  await page.goto("/?year=2021&event=2021-10&session=FP2");
+  await page.goto("/?year=2021&event=2021-10&view=weekend&session=FP2");
   await expect(
     page.getByRole("button", { name: /FP2.*หลัง Qualifying/ }),
   ).toBeVisible();
@@ -154,22 +166,20 @@ test("sprint, rain, missing data and audit are explicit", async ({
       exact: true,
     })
     .click();
-  const quality = await (await page.request.get('/api/v1/quality')).json();
-  const lapCount = `${Number(quality.raw_laps).toLocaleString('en-US')} practice laps`;
+  const quality = await (await page.request.get("/api/v1/quality")).json();
+  const lapCount = `${Number(quality.raw_laps).toLocaleString("en-US")} practice laps`;
   await expect(page.getByText(lapCount, { exact: true })).toBeVisible();
   await page.getByLabel("ขอบเขตรายงานข้อมูล").selectOption("event");
-  await expect(
-    page.getByText(lapCount, { exact: true }),
-  ).toHaveCount(0);
+  await expect(page.getByText(lapCount, { exact: true })).toHaveCount(0);
   await page.screenshot({
     path: info.outputPath("method.png"),
     fullPage: true,
   });
-  await page.goto("/?year=2023&event=2023-04&session=FP3");
+  await page.goto("/?year=2023&event=2023-04&view=weekend&session=FP3");
   await expect(
     page.getByText(/ไม่มี lap ที่ผ่านการตรวจในตัวกรองนี้/),
   ).toBeVisible();
-  await page.goto("/?year=2021&event=2021-12");
+  await page.goto("/?year=2021&event=2021-12&view=weekend");
   await expect(page.locator(".weather-note strong")).toHaveText("ไม่มีข้อมูล");
 });
 
@@ -189,8 +199,15 @@ test("read API failure can be retried and layout does not overflow", async ({
   await page.getByRole("button", { name: "ลองใหม่" }).click();
   await expect(page.getByTestId("workspace-ready")).toBeVisible();
   await expect(
-    page.getByRole("button", { name: /ดู VER lap/ }).first(),
+    page.getByRole("heading", { name: "ทำนายเวลา Qualifying", exact: true }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "กรอกเอง", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(
+    page.getByLabel("What-if FP1_Time", { exact: true }),
+  ).toBeInViewport();
+  await expect(page.getByTestId("scenario-result")).toHaveCount(0);
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth + 1,
@@ -206,9 +223,11 @@ test("local startup readiness and warm API timing", async ({ page }, info) => {
   const start = performance.now();
   await page.goto("/?year=2023&event=2023-01");
   await expect(
-    page.getByRole("button", { name: /ดู VER lap/ }).first(),
+    page.getByLabel("What-if FP1_Time", { exact: true }),
   ).toBeVisible();
-  await expect(page.locator("canvas").first()).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "ทำนายเวลา Qualifying", exact: true }),
+  ).toBeVisible();
   const readyMs = performance.now() - start;
   const apiMs: number[] = [];
   for (let i = 0; i < 10; i++) {
@@ -244,7 +263,7 @@ test("local startup readiness and warm API timing", async ({ page }, info) => {
 test("keyboard can select a driver without a pointing device", async ({
   page,
 }) => {
-  await page.goto("/?year=2023&event=2023-01");
+  await page.goto("/?year=2023&event=2023-01&view=weekend");
   const button = page.getByRole("button", { name: "เลือก LEC", exact: true });
   await expect(button).toBeVisible();
   await button.focus();

@@ -1,19 +1,41 @@
 """Serve the saved final.ipynb pipeline; never train or download at web startup."""
 import hashlib
+import re
 import joblib
 import numpy as np
 import pandas as pd
 
 from .data import ROOT, Dataset, records, flag
-from .tyre_model import parse_time
 
 SESSIONS = ["FP1", "FP2", "FP3"]
 TIMES = [f"{s}_Time" for s in SESSIONS]
 CIRCUIT_FEATURES = ["circuit_length_km", "corner_count"]
 FEATURES = TIMES + CIRCUIT_FEATURES
-from .ml import metrics
 
 FINAL = ROOT / 'data/final'
+
+
+def parse_time(value):
+    if isinstance(value, bool):
+        raise ValueError("เวลา Practice ต้องเป็นวินาทีหรือ m:ss.sss")
+    if isinstance(value, str) and ":" in value:
+        if not re.fullmatch(r"\d+:[0-5]\d(?:\.\d+)?", value.strip()):
+            raise ValueError("รูปแบบเวลาต้องเป็น m:ss.sss")
+        minutes, seconds = value.strip().split(":")
+        value = 60 * int(minutes) + float(seconds)
+    try:
+        value = float(value)
+    except (ValueError, TypeError):
+        raise ValueError("เวลา Practice ต้องเป็นตัวเลขบวก")
+    if not np.isfinite(value) or value <= 0:
+        raise ValueError("เวลา Practice ต้องมากกว่า 0 วินาทีและเป็น finite")
+    return value
+
+
+def metrics(actual, predicted):
+    residual = np.asarray(actual) - np.asarray(predicted)
+    return {"count": len(residual), "mae": float(np.abs(residual).mean()),
+            "rmse": float(np.sqrt(np.square(residual).mean()))}
 
 
 def load_final():
@@ -28,7 +50,7 @@ def load_final():
         if hashlib.sha256((FINAL / 'raw' / name).read_bytes()).hexdigest() != expected:
             raise ValueError(f'Raw changed since notebook training: {name}')
     bundle['selected'] = type(bundle['model'].named_steps['model']).__name__
-    ds = Dataset.__new__(Dataset)
+    ds = Dataset()
     ds.manifest = {'version': 'final-notebook-2021-2023', 'sha256': bundle['raw_checksums']}
     events = pd.read_csv(FINAL / 'raw/events.csv').rename(columns={
         'Year': 'year', 'RoundNumber': 'round', 'EventName': 'name',

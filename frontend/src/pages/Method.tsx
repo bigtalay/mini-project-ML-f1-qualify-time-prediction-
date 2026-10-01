@@ -50,12 +50,20 @@ export default function Method({
               </li>
               <li>
                 <span>02 / CLEANING</span>
-                <h3>{fmtInt(quality.data.kept_laps)} usable laps</h3>
-                {Object.entries(quality.data.removals).map(([k, v]) => (
-                  <p key={k}>
-                    − {fmtInt(v)} · {reasonText[k] || k}
-                  </p>
-                ))}
+                <h3>
+                  {fmtInt(
+                    quality.data.kept_laps +
+                      (quality.data.removals.not_before_qualifying ?? 0),
+                  )}{" "}
+                  usable laps
+                </h3>
+                {Object.entries(quality.data.removals)
+                  .filter(([k]) => k !== "not_before_qualifying")
+                  .map(([k, v]) => (
+                    <p key={k}>
+                      − {fmtInt(v)} · {reasonText[k] || k}
+                    </p>
+                  ))}
                 <small>
                   ตัดตามลำดับ: ซ้ำ → ไม่มีเวลา/นักขับ → เวลาไม่บวก → Deleted →
                   Inaccurate → Generated
@@ -67,7 +75,8 @@ export default function Method({
                   {fmtInt(quality.data.pre_qualifying_laps)} pre-qualifying laps
                 </h3>
                 <p>
-                  กันออกอีก {fmtInt(quality.data.after_qualifying_laps)} lap
+                  กันออกอีก{" "}
+                  {fmtInt(quality.data.removals.not_before_qualifying ?? 0)} lap
                   ที่ไม่ยืนยันว่าจบก่อน Qualifying จาก SessionInfo
                 </p>
               </li>
@@ -75,8 +84,8 @@ export default function Method({
                 <span>04 / FEATURES</span>
                 <h3>{fmtInt(quality.data.feature_rows)} driver / event rows</h3>
                 <p>
-                  ใช้เวลา ชนิดยาง และอายุยางจาก lap
-                  เร็วที่สุดแถวเดียวกันของแต่ละ Practice · target =
+                  ใช้เวลา lap เร็วที่สุดของแต่ละ Practice
+                  ร่วมกับความยาวสนามและจำนวนโค้ง รวม 5 features · target =
                   min(Q1,Q2,Q3) ที่เป็นบวก
                 </p>
                 <p>
@@ -140,8 +149,8 @@ export default function Method({
         <div className="prose">
           <h3>Raw ในงานนี้หมายถึงอะไร</h3>
           <p>
-            ข้อมูลระดับ result และ lap ที่ส่งออกจาก FastF1
-            เก็บ raw ก่อน cleaning และแปลงหน่วยในขั้นวิเคราะห์ ไม่มี weather ในชุดนี้ FastF1
+            ข้อมูลระดับ result และ lap ที่ส่งออกจาก FastF1 เก็บ raw ก่อน
+            cleaning และแปลงหน่วยในขั้นวิเคราะห์ ไม่มี weather ในชุดนี้ FastF1
             เองมีการประมวลผลแหล่งข้อมูล จึงไม่ใช่ raw feed ทั้งหมดจากระบบจับเวลา
           </p>
           <h3>ข้อมูลที่ใช้ก่อนทำนาย</h3>
@@ -151,20 +160,21 @@ export default function Method({
             ที่แหล่งข้อมูลรายงาน ไม่ใช่การวัดเวลาจบจริงใหม่ของเรา
           </p>
           <p>
-            ไม่ใช้ชื่อทีม นักขับ รหัสสนาม ปี ยาง weather, Q1/Q2/Q3 หรือ Position เป็น
-            feature
+            ไม่ใช้ชื่อทีม นักขับ รหัสสนาม ปี ยาง weather, Q1/Q2/Q3 หรือ Position
+            เป็น feature
           </p>
           <h3>การเตรียม input</h3>
           <p>
-            ใช้เวลา FP1–FP3 + ความยาวสนาม (km) + จำนวนโค้ง รวม 5 คอลัมน์
-            session หายจะเติมเวลาจาก Practice ที่เร็วที่สุดที่มีในแถวนั้น
-            ไม่มี Practice เลยไม่ทำนาย ไม่ใช้ชนิดยางหรืออายุยางในโมเดล
-            ตัวเลขใช้ StandardScaler ที่ fit เฉพาะชุดฝึก ไม่ใช้ One-hot Encoding
+            ใช้เวลา FP1–FP3 + ความยาวสนาม (km) + จำนวนโค้ง รวม 5 คอลัมน์ session
+            หายจะเติมเวลาจาก Practice ที่เร็วที่สุดที่มีในแถวนั้น ไม่มี Practice
+            เลยไม่ทำนาย ไม่ใช้ชนิดยางหรืออายุยางในโมเดล ตัวเลขใช้ StandardScaler
+            ที่ fit เฉพาะชุดฝึก ไม่ใช้ One-hot Encoding
           </p>
           <p>
-            รายละเอียดสนามจาก F1DB (CC BY 4.0) จับคู่ผังตามปีครบ 66 รายการ
-            เช่น Barcelona และ Singapore เปลี่ยนผังในปี 2023
-            เก็บ URL ต้นทางและตรวจ checksum ก่อนโหลดโมเดล ไม่มีการเดาค่าที่ขาด
+            รายละเอียดสนามจาก F1DB (CC BY 4.0) จับคู่ด้วยปี + ชื่อ Grand Prix
+            และตรวจวันแข่งท้องถิ่น/UTC ครบ 66 รายการ เช่น Barcelona และ
+            Singapore เปลี่ยนผังในปี 2023 เก็บ URL ต้นทางและตรวจ checksum
+            ก่อนโหลดโมเดล ไม่มีการเดาค่าที่ขาด
           </p>
           <h3>แบ่งข้อมูลตามปี</h3>
           <Status {...evaluation} />
@@ -190,8 +200,8 @@ export default function Method({
           </p>
           <p>
             ทดลอง Linear Regression, Random Forest, Gradient Boosting และ SVR
-            ปรับพารามิเตอร์ด้วย ParameterGrid เลือกจาก validation RMSE
-            เว็บโหลด qualifying-circuit.joblib ที่ Notebook บันทึก ไม่ฝึกซ้ำตอนเปิด
+            ปรับพารามิเตอร์ด้วย ParameterGrid เลือกจาก validation RMSE เว็บโหลด
+            qualifying-circuit.joblib ที่ Notebook บันทึก ไม่ฝึกซ้ำตอนเปิด
             และแสดงผลเทียบ baseline ตามจริง
           </p>
           <h3>สิ่งที่กราฟยังตอบไม่ได้</h3>
@@ -203,7 +213,7 @@ export default function Method({
           <h3>ข้อมูลขาด</h3>
           <p>
             ช่องว่างคือไม่มีข้อมูล ไม่ใช่ศูนย์ ในรายละเอียด lap ไม่มีการเติมค่า
-            ส่วนการเติม input ของโมเดลเกิดภายหลังแยกชุดข้อมูลแล้ว
+            ส่วน input ของโมเดลเติมแยกจาก raw พร้อมบอกว่าใช้เวลาจาก FP ใด
           </p>
           <a
             href="https://github.com/theOehrly/Fast-F1"

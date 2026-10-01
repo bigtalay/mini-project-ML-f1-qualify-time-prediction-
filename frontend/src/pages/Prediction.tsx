@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useApi, time, delta } from "../lib";
 import type { Event, PredictionRow, Schema } from "../lib";
 import { API, Status, Empty, Download, ScoreTable } from "../ui";
@@ -19,13 +19,74 @@ export default function Prediction({
     predictions.data?.find((r) => r.predictable)?.Driver ||
     "";
   const selected = predictions.data?.find((r) => r.Driver === driver);
-  const manual = state.query.get("mode") === "manual" || event.year !== 2023;
+  const mode = state.query.get("mode");
+  const manual =
+    event.year !== 2023 ||
+    mode === "manual" ||
+    (mode !== "history" && !state.query.has("driver"));
   return (
     <div className="prediction-layout">
-      <section className="panel">
+      <section
+        className="panel prediction-primary"
+        aria-labelledby="prediction-form-title"
+      >
         <div className="panel-title">
           <span className="section-number">01</span>
-          <h2>Prediction vs. reality</h2>
+          <h2 id="prediction-form-title">กรอกเวลาซ้อมเพื่อทำนาย</h2>
+          <span className="prediction-feature-label">
+            PRACTICE → QUALIFYING
+          </span>
+        </div>
+        <div className="mode-switch" aria-label="โหมดทำนาย">
+          <button
+            aria-pressed={manual}
+            onClick={() => state.update({ mode: "manual" })}
+          >
+            กรอกเอง
+          </button>
+          <button
+            aria-pressed={!manual}
+            disabled={event.year !== 2023}
+            onClick={() => state.update({ mode: "history" })}
+          >
+            ใช้ข้อมูลย้อนหลัง
+          </button>
+          {!manual && predictions.data && (
+            <label className="prediction-driver-select">
+              นักขับสำหรับเติมค่าซ้อม
+              <select
+                aria-label="นักขับสำหรับข้อมูลย้อนหลัง"
+                value={driver}
+                onChange={(e) =>
+                  state.update({ driver: e.target.value, mode: "history" })
+                }
+              >
+                {predictions.data.map((row) => (
+                  <option key={row.Driver} value={row.Driver}>
+                    {row.Driver}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+        </div>
+        {manual || selected ? (
+          <Scenario
+            key={`${event.event_id}-${manual ? "manual" : driver}`}
+            event={event}
+            row={manual ? undefined : selected}
+          />
+        ) : (
+          <>
+            <Status {...predictions} />
+            <Empty>เลือกนักขับปี 2023 หรือเลือกโหมดกรอกเอง</Empty>
+          </>
+        )}
+      </section>
+      <section className="panel">
+        <div className="panel-title">
+          <span className="section-number">02</span>
+          <h2>ผลย้อนหลังและการประเมินโมเดล</h2>
           {event.year === 2023 && (
             <Download
               href={`${API}/events/${event.event_id}/export?kind=predictions`}
@@ -87,7 +148,9 @@ export default function Prediction({
                             ? row.predictable
                               ? "ไม่มี target สำหรับประเมิน"
                               : "ไม่มี Practice ที่ใช้ได้"
-                            : row.lower == null ? "ยังไม่ได้คำนวณช่วง" : `${time(row.lower)} – ${time(row.upper)}`}
+                            : row.lower == null
+                              ? "ยังไม่ได้คำนวณช่วง"
+                              : `${time(row.lower)} – ${time(row.upper)}`}
                         </td>
                       </tr>
                     ))}
@@ -102,36 +165,6 @@ export default function Prediction({
           <Evaluation report={evaluation.data} eventId={event.event_id} />
         )}
       </section>
-      <aside className="panel scenario">
-        <div className="panel-title">
-          <span className="section-number">02</span>
-          <h2>เวลา + สนาม</h2>
-        </div>
-        <div className="mode-switch" aria-label="โหมดทำนาย">
-          <button
-            aria-pressed={manual}
-            onClick={() => state.update({ mode: "manual" })}
-          >
-            กรอกเอง
-          </button>
-          <button
-            aria-pressed={!manual}
-            disabled={event.year !== 2023}
-            onClick={() => state.update({ mode: "history" })}
-          >
-            ใช้ข้อมูลย้อนหลัง
-          </button>
-        </div>
-        {manual || selected ? (
-          <Scenario
-            key={`${event.event_id}-${manual ? "manual" : driver}`}
-            event={event}
-            row={manual ? undefined : selected}
-          />
-        ) : (
-          <Empty>เลือกนักขับปี 2023 หรือเลือกโหมดกรอกเอง</Empty>
-        )}
-      </aside>
     </div>
   );
 }
@@ -165,64 +198,62 @@ function Scenario({ event, row }: { event: Event; row?: PredictionRow }) {
   const eventId = event.event_id;
   const historical = !!row;
   const driver = row?.Driver;
+  const request = useRef<AbortController | null>(null);
+  const runPrediction = useCallback(
+    async (fields: Record<SessionName, FormSession>) => {
+      request.current?.abort();
+      const controller = new AbortController();
+      request.current = controller;
+      setResponse(undefined);
+      setError("");
+      setLoading(true);
+      try {
+        const enabled = sessions.filter((s) => fields[s].enabled);
+        if (!enabled.length)
+          throw new Error("ไม่มี Practice ที่ใช้ได้ จึงไม่ออกคำทำนาย");
+        if (enabled.some((s) => fields[s].time.trim() === ""))
+          throw new Error("กรอกเวลาให้ครบทุก session ที่เลือก");
+        const payload = Object.fromEntries(
+          enabled.map((s) => [s, { time: fields[s].time.trim() }]),
+        );
+        const result = await fetch(`${API}/predict${driver ? "" : "/custom"}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(
+            driver
+              ? { event_id: eventId, driver, sessions: payload }
+              : { event_id: eventId, ...payload },
+          ),
+          signal: controller.signal,
+        });
+        const data = await result.json();
+        if (!result.ok)
+          throw new Error(
+            typeof data.detail === "string" ? data.detail : "ข้อมูลไม่ถูกต้อง",
+          );
+        if (!controller.signal.aborted) setResponse(data);
+      } catch (e) {
+        if (!controller.signal.aborted)
+          setError(e instanceof Error ? e.message : "ทำนายไม่สำเร็จ");
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    },
+    [eventId, driver],
+  );
   useEffect(() => {
-    const fields: Record<SessionName, FormSession> = JSON.parse(serialized);
+    request.current?.abort();
     setResponse(undefined);
     setError("");
     setLoading(false);
-    const enabled = sessions.filter((s) => fields[s].enabled);
-    if (!enabled.length) {
-      setError("ไม่มี Practice ที่ใช้ได้ จึงไม่ออกคำทำนาย");
-      return;
-    }
-    if (enabled.some((s) => fields[s].time.trim() === "")) return;
-    const controller = new AbortController();
-    const payload = Object.fromEntries(
-      enabled.map((s) => [
-        s,
-        {
-          time: fields[s].time.trim(),
-        },
-      ]),
-    );
-    setLoading(true);
-    const timer = setTimeout(() => {
-      fetch(`${API}/predict${historical ? "" : "/custom"}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          historical ? { event_id: eventId, driver, sessions: payload } : { event_id: eventId, ...payload },
-        ),
-        signal: controller.signal,
-      })
-        .then(async (r) => {
-          const data = await r.json();
-          if (!r.ok)
-            throw new Error(
-              typeof data.detail === "string"
-                ? data.detail
-                : "ข้อมูลไม่ถูกต้อง",
-            );
-          return data;
-        })
-        .then((data) => {
-          if (!controller.signal.aborted) {
-            setResponse(data);
-            setLoading(false);
-          }
-        })
-        .catch((e) => {
-          if (!controller.signal.aborted) {
-            setError(e.message);
-            setLoading(false);
-          }
-        });
-    }, 300);
+    const timer = historical
+      ? setTimeout(() => void runPrediction(JSON.parse(serialized)), 300)
+      : undefined;
     return () => {
       clearTimeout(timer);
-      controller.abort();
+      request.current?.abort();
     };
-  }, [serialized, eventId, driver, historical]);
+  }, [serialized, historical, runPrediction]);
   function update(s: SessionName, patch: Partial<FormSession>) {
     setValues((previous) => ({
       ...previous,
@@ -231,119 +262,174 @@ function Scenario({ event, row }: { event: Event; row?: PredictionRow }) {
   }
   return (
     <div className="scenario-body">
-      <div className="scenario-driver">
-        {row ? row.Driver : "กรอก Practice เอง"}
-        <span>PRE-QUALIFYING INPUTS</span>
-      </div>
-      <p>
-        {row
-          ? "เวลาเติมจาก lap จริง เปลี่ยนค่าเพื่อทดลอง scenario"
-          : "เลือกปีและสนามด้านบน แล้วกรอกเฉพาะเวลาซ้อมก่อน Qualifying ไม่ใช้ทีม นักขับ หรือยางเป็น feature"}
-      </p>
-      <div className="source-note">
-        <b>{event.name} · {event.year}</b>
-        <p>ความยาวสนาม {event.circuit_length_km.toFixed(3)} km · {event.corner_count} โค้ง</p>
-        <p>ผัง {event.layout_id} — เติมตามสนามและปีที่เลือก ไม่ใช่ค่าที่เดาจากเวลา Q</p>
-        <a href={event.source_url} target="_blank" rel="noreferrer">แหล่งข้อมูลสนาม: F1DB (CC BY 4.0) ↗</a>
-      </div>
-      {sessions.map((s) => (
-        <fieldset className="tyre-session" key={s}>
-          <legend>{s}</legend>
-          <label className="session-toggle">
-            <input
-              type="checkbox"
-              checked={values[s].enabled}
-              disabled={!!row}
-              onChange={(e) => update(s, { enabled: e.target.checked })}
-              aria-label={`มีข้อมูล ${s}`}
-            />{" "}
-            มีข้อมูล session นี้
-          </label>
-          {values[s].enabled ? (
-            <>
-              <label className="scenario-input">
-                เวลา (วินาที หรือ m:ss.sss)
-                <input
-                  aria-label={`What-if ${s}_Time`}
-                  inputMode="decimal"
-                  placeholder="90.123 หรือ 1:30.123"
-                  value={values[s].time}
-                  onChange={(e) => update(s, { time: e.target.value })}
-                />
-              </label>
-
-              {row?.[`${s}_lap_id`] && (
-                <a
-                  href={`?year=2023&event=${event.event_id}&view=weekend&drivers=${row.Driver}&session=${s}&lap=${row[`${s}_lap_id`]}`}
-                >
-                  ดู lap ต้นทาง {s} ↗
-                </a>
-              )}
-            </>
-          ) : (
-            <p className="footnote">
-              ไม่มี session: ใช้เวลาจาก Practice
-              ที่เร็วที่สุดที่กรอกไว้
-            </p>
-          )}
-        </fieldset>
-      ))}
-      <button
-        className="reset-button"
-        onClick={() => setValues(initialForm(row))}
+      <form
+        className="prediction-inputs"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void runPrediction(values);
+        }}
       >
-        {row ? "↺ คืนค่าจากข้อมูลจริง" : "ล้างค่าที่กรอก"}
-      </button>
-      <Status loading={loading} error={error} />
-      {!loading && !error && !response && (
-        <p className="footnote">
-          กรอกเวลาให้ครบทุก session ที่เลือก ผลจะคำนวณอัตโนมัติ
+        <p className="prediction-instruction">
+          {row
+            ? `เติมเวลาจริงของ ${row.Driver} แล้ว · ปรับค่าเพื่อทดลอง What-if`
+            : "ใส่เวลารอบซ้อมที่เร็วที่สุดของแต่ละ FP ก่อน Qualifying"}
+          <span>
+            รับทั้งวินาที เช่น 90.123 หรือรูปแบบ 1:30.123 · มีข้อมูลอย่างน้อย 1
+            session
+          </span>
         </p>
-      )}
-      {response && (
-        <div
-          className="scenario-output"
-          aria-live="polite"
-          data-testid="scenario-result"
-        >
-          <span>SCENARIO RESULT</span>
-          <strong>{time(response.prediction)}</strong>
-          {response.delta != null && (
-            <p>
-              {delta(response.delta)}{" "}
-              <span className="muted">จาก input เดิม</span>
-            </p>
-          )}
-          <small>
-            โมเดล {response.model} · จาก final.ipynb · ยังไม่ได้คำนวณช่วงความคลาดเคลื่อน
-          </small>
-          {response.imputations.map((message) => (
-            <p className="footnote" key={message}>
-              {message}
-            </p>
-          ))}
-          {response.warnings.map((message) => (
-            <p className="notice" key={message}>
-              {message}
-            </p>
-          ))}
+        <div className="source-note">
+          <b>
+            {event.name} · {event.year}
+          </b>
+          <p>
+            ความยาวสนาม {event.circuit_length_km.toFixed(3)} km ·{" "}
+            {event.corner_count} โค้ง
+          </p>
           <details>
-            <summary>ค่าที่โมเดลได้รับหลังเติม missing</summary>
-            <dl>
-              {Object.entries(response.inputs).map(([key, value]) => (
-                <div key={key}>
-                  <dt>{key}</dt>
-                  <dd>{String(value)}</dd>
-                </div>
-              ))}
-            </dl>
+            <summary>รายละเอียดสนามและแหล่งข้อมูล</summary>
+            <p>ผัง {event.layout_id} — ใช้รายละเอียดตามสนามและปีที่เลือก</p>
+            <a href={event.source_url} target="_blank" rel="noreferrer">
+              แหล่งข้อมูลสนาม: F1DB (CC BY 4.0) ↗
+            </a>
           </details>
         </div>
-      )}
-      <p className="footnote">
-        เป็นการทดลอง input ไม่ใช่หลักฐานว่าการเปลี่ยน input จะทำให้รถเร็วขึ้นจริง
-        ไม่มีช่วงรับประกันความแม่นยำสำหรับโมเดลนี้
-      </p>
+        <div className="practice-grid">
+          {sessions.map((s) => (
+            <fieldset
+              className={`practice-session ${values[s].enabled ? "" : "session-missing"}`}
+              key={s}
+            >
+              <legend>{s}</legend>
+              <label className="session-toggle">
+                <input
+                  type="checkbox"
+                  checked={values[s].enabled}
+                  disabled={!!row}
+                  onChange={(e) => update(s, { enabled: e.target.checked })}
+                  aria-label={`มีข้อมูล ${s}`}
+                />{" "}
+                {values[s].enabled ? "มีเวลาซ้อม" : "ไม่มีข้อมูล"}
+              </label>
+              {values[s].enabled ? (
+                <>
+                  <label className="scenario-input">
+                    เวลา (วินาที หรือ m:ss.sss)
+                    <input
+                      aria-label={`What-if ${s}_Time`}
+                      inputMode="decimal"
+                      required
+                      placeholder="90.123 หรือ 1:30.123"
+                      value={values[s].time}
+                      onChange={(e) => update(s, { time: e.target.value })}
+                    />
+                  </label>
+
+                  {row?.[`${s}_lap_id`] && (
+                    <a
+                      href={`?year=2023&event=${event.event_id}&view=weekend&drivers=${row.Driver}&session=${s}&lap=${row[`${s}_lap_id`]}`}
+                    >
+                      ดู lap ต้นทาง {s} ↗
+                    </a>
+                  )}
+                </>
+              ) : (
+                <p className="footnote">
+                  ไม่มี session: ใช้เวลาจาก Practice ที่เร็วที่สุดที่กรอกไว้
+                </p>
+              )}
+            </fieldset>
+          ))}
+        </div>
+        <div className="prediction-actions">
+          {!historical && (
+            <button type="submit" className="predict-button" disabled={loading}>
+              {loading ? "กำลังทำนาย…" : "ทำนายเวลา Qualifying"}
+              <span aria-hidden="true"> →</span>
+            </button>
+          )}
+          <button
+            type="button"
+            className="reset-button"
+            onClick={() => {
+              setValues(initialForm(row));
+              if (!historical) {
+                request.current?.abort();
+                setResponse(undefined);
+                setError("");
+                setLoading(false);
+              }
+            }}
+          >
+            {row ? "↺ คืนค่าจากข้อมูลจริง" : "ล้างค่าที่กรอก"}
+          </button>
+        </div>
+        <p className="footnote">
+          FP ที่ไม่มีข้อมูลจะใช้เวลาซ้อมที่เร็วที่สุดจากค่าที่มี · ไม่ใช้ทีม
+          นักขับ หรือยางเป็น feature
+        </p>
+      </form>
+      <section
+        className="prediction-result-panel"
+        aria-label="ผลทำนายเวลา Qualifying"
+        aria-live="polite"
+        aria-busy={loading}
+      >
+        <h3>เวลา Qualifying ที่คาดการณ์</h3>
+        <Status loading={loading} error={error} />
+        {!loading && !error && !response && (
+          <div className="prediction-placeholder">
+            <strong>—:—.———</strong>
+            <p>
+              {historical
+                ? "ปรับเวลาซ้อมเพื่อทดลอง ผลจะคำนวณอัตโนมัติ"
+                : "กรอกเวลาซ้อม แล้วกดทำนายเพื่อดูผลตรงนี้"}
+            </p>
+          </div>
+        )}
+        {response && (
+          <div className="scenario-output" data-testid="scenario-result">
+            <span>{historical ? "WHAT-IF RESULT" : "PREDICTED LAP TIME"}</span>
+            <strong>{time(response.prediction)}</strong>
+            {response.delta != null && (
+              <p>
+                {delta(response.delta)}{" "}
+                <span className="muted">จาก input เดิม</span>
+              </p>
+            )}
+            <small>
+              โมเดล {response.model} · จาก final.ipynb ·
+              ยังไม่ได้คำนวณช่วงความคลาดเคลื่อน
+            </small>
+            {response.imputations.map((message) => (
+              <p className="footnote" key={message}>
+                {message}
+              </p>
+            ))}
+            {response.warnings.map((message) => (
+              <p className="notice" key={message}>
+                {message}
+              </p>
+            ))}
+            <details>
+              <summary>ค่าที่โมเดลได้รับหลังเติม missing</summary>
+              <dl>
+                {Object.entries(response.inputs).map(([key, value]) => (
+                  <div key={key}>
+                    <dt>{key}</dt>
+                    <dd>{String(value)}</dd>
+                  </div>
+                ))}
+              </dl>
+            </details>
+          </div>
+        )}
+        <p className="footnote">
+          ค่าประมาณจากเวลาซ้อมและรายละเอียดสนาม ไม่ใช่เวลาอย่างเป็นทางการ
+          และยังไม่มี Prediction Interval การเปลี่ยน input
+          ไม่ใช่หลักฐานว่าจะทำให้รถเร็วขึ้นจริง
+        </p>
+      </section>
     </div>
   );
 }
@@ -384,7 +470,9 @@ function Evaluation({
         <ScoreTable title="ผลเฉพาะรายการที่กำลังดู" rows={eventScores} />
       )}
       <details>
-        <summary>ดูคะแนนที่ใช้เลือกโมเดล (2022 / ทั้งปี หลังปรับพารามิเตอร์)</summary>
+        <summary>
+          ดูคะแนนที่ใช้เลือกโมเดล (2022 / ทั้งปี หลังปรับพารามิเตอร์)
+        </summary>
         <ScoreTable title="Model selection" rows={report.selection} />
       </details>
       <p className="footnote">
@@ -393,8 +481,10 @@ function Evaluation({
       </p>
       <div className="interval-note">
         <b>ใช้โมเดลที่บันทึกจาก final.ipynb โดยตรง</b>
-        <p>ฝึกปี 2021 เลือกโมเดลและพารามิเตอร์ด้วยปี 2022 แล้ว refit ทั้งสองปี
-          ไม่มีชุด calibration แยก จึงไม่แสดงช่วง error จากโมเดลเก่า</p>
+        <p>
+          ฝึกปี 2021 เลือกโมเดลและพารามิเตอร์ด้วยปี 2022 แล้ว refit ทั้งสองปี
+          ไม่มีชุด calibration แยก จึงยังไม่แสดง Prediction Interval
+        </p>
       </div>
     </div>
   );

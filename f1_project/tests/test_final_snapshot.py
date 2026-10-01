@@ -12,6 +12,12 @@ import pandas as pd
 
 
 class SnapshotTest(unittest.TestCase):
+    def test_release_contains_one_notebook_and_one_model(self):
+        root = Path(__file__).resolve().parents[1]
+        self.assertEqual(sorted(p.name for p in root.glob('*.ipynb')), ['final.ipynb'])
+        self.assertEqual(sorted(p.name for p in (root / 'data/final/models').glob('*.joblib')),
+                         ['qualifying-circuit.joblib'])
+
     def test_download_cell_skips_all_66_events(self):
         root = Path(__file__).resolve().parents[1]
         raw = root / 'data/final/raw'

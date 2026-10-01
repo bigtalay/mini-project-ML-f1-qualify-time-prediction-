@@ -1,26 +1,20 @@
 name: f1-weekend-intelligence
 
-x-runtime: &runtime
-  image: f1-weekend-intelligence:local
-  volumes:
-    - artifacts:/workspace/f1_project/artifacts
-
 services:
   prepare:
-    <<: *runtime
+    image: f1-weekend-intelligence:local
     command: ["python", "-c", "from intelligence.final_model import load_final; load_final(); print('Notebook model ready')"]
     volumes:
       - ./f1_project/data/final:/workspace/f1_project/data/final:ro
     restart: "no"
 
   app:
-    <<: *runtime
+    image: f1-weekend-intelligence:local
     build: .
     depends_on:
       prepare:
         condition: service_completed_successfully
     volumes:
-      - artifacts:/workspace/f1_project/artifacts
       - ./f1_project/data/final:/workspace/f1_project/data/final:ro
     ports:
       - "127.0.0.1:8501:8501"
@@ -33,31 +27,16 @@ services:
       retries: 3
 
   jupyter:
-    <<: *runtime
+    image: f1-weekend-intelligence:local
+    build: .
     profiles: ["notebook"]
     command: ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--IdentityProvider.token=", "--ServerApp.password=", "--ServerApp.root_dir=/workspace/f1_project"]
     ports:
       - "127.0.0.1:8888:8888"
     volumes:
       - ./f1_project:/workspace/f1_project
-      - artifacts:/workspace/f1_project/artifacts
-
-  legacy:
-    <<: *runtime
-    profiles: ["legacy"]
-    command: ["streamlit", "run", "app.py", "--server.address=0.0.0.0", "--server.port=8502", "--server.headless=true", "--browser.gatherUsageStats=false"]
-    ports:
-      - "127.0.0.1:8502:8502"
-
-  pipeline:
-    <<: *runtime
-    profiles: ["tools"]
-    command: ["python", "-m", "intelligence.prepare", "--force"]
 
   test:
-    <<: *runtime
+    image: f1-weekend-intelligence:local
     profiles: ["tools"]
     command: ["python", "-m", "unittest", "discover", "-s", "tests", "-v"]
-
-volumes:
-  artifacts:

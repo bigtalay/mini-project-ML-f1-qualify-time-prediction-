@@ -4,10 +4,32 @@ import numpy as np
 import pandas as pd
 from fastapi.testclient import TestClient
 from intelligence.api import app
-from intelligence.final_model import FINAL
+from intelligence.final_model import FINAL, parse_time
 
 
 class FinalWebTest(unittest.TestCase):
+    def test_input_validation_cutoff_audit_and_training_isolation(self):
+        self.assertAlmostEqual(parse_time('1:32.123'), 92.123)
+        for value in [True, False, None, '', 'abc', '1:99', 0, -1, np.nan, np.inf]:
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                parse_time(value)
+        with TestClient(app) as client:
+            ds = app.state.dataset
+            quality = client.get('/api/v1/quality').json()
+            self.assertEqual(quality['raw_laps'], quality['kept_laps'] + sum(quality['removals'].values()))
+            self.assertTrue(ds.laps.loc[ds.laps.usable, 'pre_qualifying'].all())
+            self.assertTrue(ds.features.loc[ds.features.event_id.eq('2021-10'), 'FP2_Time'].isna().all())
+            report = app.state.bundle['report']
+            parts = [set(p['events']) for p in report['partitions'].values()]
+            for i, part in enumerate(parts):
+                for other in parts[i + 1:]:
+                    self.assertFalse(part & other)
+            model_data = pd.read_csv(FINAL / 'processed/model_dataset.csv')
+            training = model_data.loc[model_data.Year.isin([2021, 2022]), app.state.bundle['features']]
+            np.testing.assert_allclose(app.state.bundle['model'].named_steps['preprocess'].mean_, training.mean())
+            self.assertEqual(len(training), 868)
+            self.assertIsNone(report['interval'])
+
     def test_saved_model_api_and_analytics(self):
         with TestClient(app) as client:
             self.assertEqual(client.get('/api/v1/health').json()['model'], app.state.bundle['selected'])

@@ -115,7 +115,6 @@ six==1.17.0
 soupsieve==2.9.2
 stack-data==0.6.3
 starlette==1.6.0
-streamlit==1.63.0
 terminado==0.18.1
 threadpoolctl==3.6.0
 timple==0.1.8

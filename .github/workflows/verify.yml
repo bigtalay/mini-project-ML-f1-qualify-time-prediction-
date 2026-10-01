@@ -16,7 +16,8 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: docker compose config --quiet
       - run: docker compose up --build -d
-      - run: docker compose run --rm test python -m unittest tests.test_final_notebook tests.test_final_web tests.test_final_snapshot -v
+      - run: docker compose run --rm test
+      - run: docker compose run --rm jupyter jupyter nbconvert --to notebook --execute final.ipynb --output /tmp/verified-final.ipynb --ExecutePreprocessor.timeout=600
       - run: npm ci && npm run lint && npm run build && npm run schema && git diff --exit-code -- src/api.d.ts
         working-directory: frontend
       - run: npx playwright install --with-deps chromium

@@ -1,5 +1,6 @@
 .git
 .ipynb_checkpoints
+.Trash-*
 __pycache__
 *.py[cod]
 f1_project/artifacts
@@ -13,3 +14,11 @@ frontend/test-results
 frontend/playwright-report
 AGENTS.md
 docs/screenshots
+.playwright-cli
+output
+tmp
+f1_project/data/final/raw/events/2018-*
+f1_project/data/final/raw/events/2019-*
+f1_project/data/final/raw/events/2020-*
+f1_project/data/final/raw/events/2024-*
+f1_project/data/final/raw/events/2025-*
